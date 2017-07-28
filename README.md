@@ -1,2 +1,4 @@
 # Java
-A collection of miscellaneous Java work, including some code for my classes at KSU
+A collection of miscellaneous Java work
+
+Also included is my library of JARs 
