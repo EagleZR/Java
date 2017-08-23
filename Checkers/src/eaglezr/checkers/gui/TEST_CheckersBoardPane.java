@@ -18,7 +18,7 @@ public class TEST_CheckersBoardPane extends Application {
 		boardPane.prefHeightProperty().bind( scene.heightProperty() );
 		boardPane.prefWidthProperty().bind( scene.widthProperty() );
 		primaryStage.setScene( scene );
-//		primaryStage.setResizable( false );
+		primaryStage.setResizable( false );
 		primaryStage.show();
 		boardPane.drawBoard();
 	}

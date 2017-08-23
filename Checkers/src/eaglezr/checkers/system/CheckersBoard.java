@@ -224,7 +224,7 @@ public class CheckersBoard extends Board {
 						&& getWidth() > x && getHeight() > y && getPlaces()[x][y] == null;
 			} else {
 				return Math.abs( getPieceCoord( piece )[0] - x ) == 1 && getPieceCoord( piece )[1] - y == (
-						piece.getOwner().getOrientation() == Orientation.UP ? 1 : -1 ) && getWidth() > x
+						piece.getOwner().getOrientation() == Orientation.UP ? -1 : 1 ) && getWidth() > x
 						&& getHeight() > y && getPlaces()[x][y] == null;
 			}
 		} else {

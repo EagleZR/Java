@@ -43,13 +43,9 @@ public class CheckersBoardPane extends BoardPane {
 					piecePane.prefWidthProperty().bind( widthProperty().divide( board.getWidth() ) );
 					piecePane.prefHeightProperty().bind( heightProperty().divide( board.getHeight() ) );
 
-					piecePane.setOnMouseEntered( e -> {
-						highlightAvailableMoves( piecePane.getPiece() );
-					} );
+					piecePane.setOnMouseEntered( e -> highlightAvailableMoves( piecePane.getPiece() ) );
 
-					piecePane.setOnMouseExited( e -> {
-						drawBoard();
-					} );
+					piecePane.setOnMouseExited( e -> drawBoard() );
 
 					// Move piece
 					//					piecePane.setTranslateX( getWidth() / board.getWidth() * x );
