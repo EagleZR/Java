@@ -222,3 +222,10 @@ pip-log.txt
 
 */out/*
 */.idea/*
+*/META-INF/*
+*/MANIFEST.MF
+
+#############
+## My generated files
+#############
+*/logs/*
