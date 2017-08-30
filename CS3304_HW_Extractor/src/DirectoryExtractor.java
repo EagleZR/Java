@@ -1,3 +1,5 @@
+import eaglezr.support.logs.LoggingTool;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -18,9 +20,9 @@ public class DirectoryExtractor {
 		File newDir = new File( directory.getParent() + "\\Zeagler_" + directory.getName() );
 
 		if ( newDir.mkdirs() ) {
-			System.out.println( "A new directory was created at " + newDir.getAbsolutePath() );
+			LoggingTool.print( "A new directory was created at \"" + newDir.getAbsolutePath() + "\"." );
 		} else {
-			System.out.println( "The directory " + newDir.getAbsolutePath() + " already exists." );
+			LoggingTool.print( "The directory \"" + newDir.getAbsolutePath() + "\" already exists." );
 		}
 
 		try {
@@ -31,12 +33,12 @@ public class DirectoryExtractor {
 			try {
 				outputMessage( newDir );
 			} catch ( IOException e ) {
-				System.out.println( "The output message could not be written." );
+				LoggingTool.print( "The output message could not be written." );
 			}
 
-			System.out.println( "The files were extracted to " + newDir.getAbsolutePath() );
+			LoggingTool.print( "The files were extracted to \"" + newDir.getAbsolutePath() + "\"." );
 		} catch ( IOException e ) {
-			System.out.println( "The files could not be extracted." );
+			LoggingTool.print( "The files could not be extracted." );
 			e.printStackTrace();
 		}
 	}
@@ -48,6 +50,8 @@ public class DirectoryExtractor {
 				if ( file.getName().contains( ".cpp" ) || file.getName().contains( ".docx" ) ) {
 					Files.copy( file.toPath(), new File( newDir.getAbsolutePath() + "\\" + file.getName() ).toPath(),
 							StandardCopyOption.COPY_ATTRIBUTES );
+					LoggingTool.print( "The file \"" + file.getName() + "\" was copied from \"" + file.getParent()
+							+ "\" to \"" + newDir.getAbsolutePath() + "\"." );
 				}
 			} else {
 				File newerDir = new File( newDir.getAbsolutePath() + "\\" + file.getName() );
@@ -69,7 +73,7 @@ public class DirectoryExtractor {
 
 		// If directory is empty, delete this directory
 		if ( dir.listFiles().length == 0 ) {
-			System.out.println( "An empty directory, " + dir.getAbsolutePath() + ", is being deleted." );
+			//			LoggingTool.print( "An empty directory, " + dir.getAbsolutePath() + ", is being deleted." );
 			dir.delete();
 		}
 	}

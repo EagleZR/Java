@@ -1,3 +1,5 @@
+import eaglezr.support.logs.LoggingTool;
+
 import java.io.File;
 
 public class CS3304_HW_Extractor {
@@ -8,6 +10,7 @@ public class CS3304_HW_Extractor {
 			return;
 		}
 
+		LoggingTool.getLogger().setDefault( LoggingTool.generateLogPrinter( "ExtractorConsole" ) );
 		DirectoryExtractor extractor = new DirectoryExtractor( new File( args[0] ) );
 		extractor.extract();
 

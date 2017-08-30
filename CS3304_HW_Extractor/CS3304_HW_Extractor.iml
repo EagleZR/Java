@@ -7,5 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="PopupStage" level="project" />
+    <orderEntry type="library" name="LoggingTool" level="project" />
   </component>
 </module>
