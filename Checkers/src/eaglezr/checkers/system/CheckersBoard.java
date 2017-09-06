@@ -194,19 +194,22 @@ public class CheckersBoard extends Board {
 	 * @throws PieceNotOnBoardException
 	 */
 	protected void moveOverride( CheckersPiece piece, int x, int y ) throws PieceNotOnBoardException {
+		boolean found = false;
 		for ( int xPos = 0; xPos < getWidth(); xPos++ ) {
 			for ( int yPos = 0; yPos < getHeight(); yPos++ ) {
-				if ( places[xPos][yPos] == piece ) {
+				if ( places[xPos][yPos] != null && places[xPos][yPos].equals( piece ) ) {
+					found = true;
 					places[xPos][yPos] = null;
 					yPos = getWidth();
 					xPos = getHeight();
 					places[x][y] = piece;
 					movingPlayer = ( movingPlayer == player1 ? player2 : player1 );
-
 				}
 			}
 		}
-		throw new PieceNotOnBoardException( "Cannot find the piece" );
+		if ( !found ) {
+			throw new PieceNotOnBoardException( "Cannot find the piece" );
+		}
 	}
 
 	/**
@@ -218,14 +221,14 @@ public class CheckersBoard extends Board {
 	 * @return
 	 */
 	public boolean isValidMove( CheckersPiece piece, int x, int y ) throws PieceNotOnBoardException {
-		if ( x >= 0 && y >= 0 ) {
+		if ( Math.abs( getPieceCoord( piece )[0] - x ) == 1 && x >= 0 && y >= 0 && getWidth() > x && getHeight() > y
+				&& getPlaces()[x][y] == null ) {
 			if ( piece.isPromoted() ) {
-				return Math.abs( getPieceCoord( piece )[0] - x ) == 1 && Math.abs( getPieceCoord( piece )[1] - y ) == 1
-						&& getWidth() > x && getHeight() > y && getPlaces()[x][y] == null;
+				return Math.abs( getPieceCoord( piece )[1] - y ) == 1;
 			} else {
-				return Math.abs( getPieceCoord( piece )[0] - x ) == 1 && getPieceCoord( piece )[1] - y == (
-						piece.getOwner().getOrientation() == Orientation.UP ? -1 : 1 ) && getWidth() > x
-						&& getHeight() > y && getPlaces()[x][y] == null;
+				return getPieceCoord( piece )[1] - y == ( piece.getOwner().getOrientation() == Orientation.UP ?
+						-1 :
+						1 );
 			}
 		} else {
 			return false;
@@ -311,34 +314,60 @@ public class CheckersBoard extends Board {
 	 */
 	public boolean isValidJump( CheckersPiece piece1, CheckersPiece piece2 ) throws PieceNotOnBoardException {
 		int[] dest = getJumpDestination( piece1, piece2 );
+		int p1X;
+		int p1Y;
 		if ( jumpChain == null ) {
-			if ( piece1.isPromoted() ) {
-				return !piece1.getOwner().equals( piece2.getOwner() )
-						&& Math.abs( getPieceCoord( piece1 )[0] - getPieceCoord( piece2 )[0] ) == 1
-						&& Math.abs( getPieceCoord( piece1 )[1] - getPieceCoord( piece2 )[1] ) == 1
-						&& getWidth() > dest[0] && getHeight() > dest[1] && getPlaces()[dest[0]][dest[1]] == null;
-			} else {
-				return !piece1.getOwner().equals( piece2.getOwner() )
-						&& Math.abs( getPieceCoord( piece1 )[0] - getPieceCoord( piece2 )[0] ) == 1
-						&& getPieceCoord( piece1 )[1] - getPieceCoord( piece2 )[1] == (
-						piece1.getOwner().getOrientation() == Orientation.UP ? 1 : -1 ) && getWidth() > dest[0]
-						&& getHeight() > dest[1] && getPlaces()[dest[0]][dest[1]] == null;
-			}
+			int[] p1XY = getPieceCoord( piece1 );
+			p1X = p1XY[0];
+			p1Y = p1XY[1];
 		} else {
 			JumpPlaceholder lastJump = getLastJump();
-			if ( jumpChainPromotion( piece1 ) ) {
-				return !piece1.getOwner().equals( piece2.getOwner() )
-						&& Math.abs( lastJump.getX() - getPieceCoord( piece2 )[0] ) == 1
-						&& Math.abs( lastJump.getY() - getPieceCoord( piece2 )[1] ) == 1 && getWidth() > dest[0]
-						&& getHeight() > dest[1] && getPlaces()[dest[0]][dest[1]] == null;
-			} else {
-				return !piece1.getOwner().equals( piece2.getOwner() )
-						&& Math.abs( lastJump.getX() - getPieceCoord( piece2 )[0] ) == 1
-						&& lastJump.getY() - getPieceCoord( piece2 )[1] == (
-						piece1.getOwner().getOrientation() == Orientation.UP ? 1 : -1 ) && getWidth() > dest[0]
-						&& getHeight() > dest[1] && getPlaces()[dest[0]][dest[1]] == null;
-			}
+			p1X = lastJump.getX();
+			p1Y = lastJump.getY();
 		}
+		return isValidJump( p1X, p1Y, piece1.isPromoted(), piece1.getOwner().getOrientation(), piece2, dest );
+	}
+
+	private boolean isValidJump( int p1X, int p1Y, boolean p1Promoted, Orientation p1Orientation, CheckersPiece piece2,
+			int[] dest ) throws PieceNotOnBoardException {
+		// If x-movement is no greater than 1
+		if ( Math.abs( p1X - getPieceCoord( piece2 )[0] ) != 1 ) {
+			//			System.out.println( "0" );
+			return false;
+		}
+		// If the y-movement is no greater than 1, and in the correct direction if the piece is unpromoted
+		if ( ( p1Promoted && Math.abs( p1Y - getPieceCoord( piece2 )[1] ) != 1 ) || ( !p1Promoted
+				&& p1Y - getPieceCoord( piece2 )[1] != ( p1Orientation == Orientation.UP ? -1 : 1 ) ) ) {
+			//			System.out.println( "1" );
+			return false;
+		}
+		// If the destination is on the board
+		if ( getWidth() <= dest[0] ) {
+			//			System.out.println( "2" );
+			return false;
+		}
+		// If the destination is on the board
+		if ( getHeight() <= dest[1] ) {
+			//			System.out.println( "3: " + dest[1] );
+			return false;
+		}
+		// If the place on the board is empty
+		if ( getPieceAt( dest[0], dest[1] ) != null ) {
+			//			System.out.println( "4" );
+			return false;
+		}
+		return true;
+		//		if ( p1Promoted ) {
+		//			return Math.abs( p1X - getPieceCoord( piece2 )[0] ) == 1
+		//					&& Math.abs( p1Y - getPieceCoord( piece2 )[1] ) == 1 && getWidth() > dest[0]
+		//					&& getHeight() > dest[1] && getPieceAt( dest[0], dest[1] ) == null;
+		//		} else {
+		//			return Math.abs( p1X - getPieceCoord( piece2 )[0] ) == 1 && p1Y - getPieceCoord( piece2 )[1] == (
+		//					p1Orientation == Orientation.UP ?
+		//							1 :
+		//							-1 ) && getWidth() > dest[0] && getHeight() > dest[1]
+		//					&& getPieceAt( dest[0], dest[1] ) == null;
+		//		}
 	}
 
 	/**
@@ -351,15 +380,24 @@ public class CheckersBoard extends Board {
 	 * @throws PieceNotOnBoardException
 	 */
 	public int[] getJumpDestination( CheckersPiece piece1, CheckersPiece piece2 ) throws PieceNotOnBoardException {
+		int jumpX;
+		int jumpY;
+
 		if ( jumpChain == null ) {
-			return new int[] {
-					getPieceCoord( piece1 )[0] + ( 2 * getPieceCoord( piece1 )[0] - getPieceCoord( piece2 )[0] ),
-					getPieceCoord( piece1 )[1] + ( 2 * getPieceCoord( piece1 )[1] - getPieceCoord( piece2 )[1] ) };
+			int[] pieceCoord = getPieceCoord( piece1 );
+			jumpX = pieceCoord[0];
+			jumpY = pieceCoord[1];
 		} else {
 			JumpPlaceholder lastJump = getLastJump();
-			return new int[] { lastJump.getX() + ( 2 * lastJump.getX() - getPieceCoord( piece2 )[0] ),
-					lastJump.getY() + ( 2 * lastJump.getY() - getPieceCoord( piece2 )[1] ) };
+			jumpX = lastJump.getX();
+			jumpY = lastJump.getY();
 		}
+
+		int[] piece2Coord = getPieceCoord( piece2 );
+		int p2X = piece2Coord[0];
+		int p2Y = piece2Coord[1];
+
+		return new int[] { jumpX + ( p2X - jumpX ) * 2, jumpY + ( p2Y - jumpY ) * 2 };
 	}
 
 	/**

@@ -69,7 +69,6 @@ public class CheckersBoardPane extends BoardPane {
 	}
 
 	private void highlightAvailableMoves( CheckersPiece piece ) {
-		System.out.println( "Attempting to highlight" );
 		for ( int x = 0; x < board.getWidth(); x++ ) {
 			for ( int y = 0; y < board.getHeight(); y++ ) {
 				try {

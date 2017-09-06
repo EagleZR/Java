@@ -89,7 +89,7 @@ public class TEST_CheckersBoard {
 	/**
 	 * Tests the board.isValidMove method without actually completing the move.
 	 */
-	@Test public void testValidMoveMethods(){
+	@Test public void testValidMoveMethods() {
 		CheckersPlayer player1 = new CheckersPlayer( Color.WHITE );
 		CheckersPlayer player2 = new CheckersPlayer( Color.BLACK );
 
@@ -117,7 +117,7 @@ public class TEST_CheckersBoard {
 
 		// Move a piece to the middle and check backwards, unpromoted movement
 		try {
-			CheckersPiece piece =  board.getPieceAt( 1, 5 );
+			CheckersPiece piece = board.getPieceAt( 1, 5 );
 			board.moveOverride( piece, 1, 3 );
 			assertFalse( board.isValidMove( piece, 0, 2 ) );
 		} catch ( PieceNotOnBoardException e ) {
@@ -127,7 +127,7 @@ public class TEST_CheckersBoard {
 
 		// Promote the moved piece and check backwards movement
 		try {
-			CheckersPiece piece =  board.getPieceAt( 1, 5 );
+			CheckersPiece piece = board.getPieceAt( 1, 3 );
 			piece.promote();
 			assertTrue( board.isValidMove( piece, 0, 2 ) );
 		} catch ( PieceNotOnBoardException e ) {
@@ -139,14 +139,14 @@ public class TEST_CheckersBoard {
 	/**
 	 * Tests the board.isValidJump method without actually completing the jump.
 	 */
-	@Test public void testValidJumpMethods(){
+	@Test public void testValidJumpMethods() {
 
 	}
 
 	/**
 	 * Tests that multiple jumps in a chain will be recognized as valid without actually completing the jump.
 	 */
-	@Test public void testJumpChainConstruction(){
+	@Test public void testJumpChainConstruction() {
 
 	}
 
@@ -301,7 +301,7 @@ public class TEST_CheckersBoard {
 		// Player2 move 3
 		try {
 			board.jump( player2, board.getPieceAt( 2, 4 ), board.getPieceAt( 1, 3 ) );
-			board.completeJump(player2, board.getPieceAt( 2, 4 )); // For chaining jumps
+			board.completeJump( player2, board.getPieceAt( 2, 4 ) ); // For chaining jumps
 			// TODO Test chaining jumps
 		} catch ( WrongPlayerMoveException | PieceNotOnBoardException | InvalidMoveException e ) {
 			e.printStackTrace();
