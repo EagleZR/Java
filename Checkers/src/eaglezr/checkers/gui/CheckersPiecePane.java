@@ -31,17 +31,18 @@ public class CheckersPiecePane extends StackPane {
 		setAlignment( innerCircle, Pos.CENTER );
 		innerCircle.radiusProperty().bind( widthProperty().multiply( 0.3 ) );
 
-		Image crownImage = new Image( "eaglezr/checkers/resources/crown.png" );
-		ImageView crown = new ImageView( crownImage );
-		setAlignment( crown, Pos.CENTER );
-		crown.fitWidthProperty().bind( widthProperty().divide( 2 ) );
-		crown.setPreserveRatio( true );
-		crown.setSmooth( true );
-
 		getChildren().add( outsideCircle );
 		getChildren().add( innerCircle );
-		if ( piece.isPromoted() )
+
+		if ( piece.isPromoted() ) {
+			Image crownImage = new Image( "eaglezr/checkers/resources/crown.png" );
+			ImageView crown = new ImageView( crownImage );
+			setAlignment( crown, Pos.CENTER );
+			crown.fitWidthProperty().bind( widthProperty().divide( 2 ) );
+			crown.setPreserveRatio( true );
+			crown.setSmooth( true );
 			getChildren().add( crown );
+		}
 	}
 
 	public void setPromoted( boolean isPromoted ) {

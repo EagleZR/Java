@@ -1,22 +1,47 @@
 import eaglezr.support.logs.LoggingTool;
-import sun.rmi.runtime.Log;
 
 public class Calculator {
 
 	public static double calculate( String equation ) {
-		double ans = internalCalculate( equation );
+		double ans = internalCalculate( process( equation ) );
 		LoggingTool.print( equation + " = " + ans + "\n" );
 		return ans;
+	}
+
+	private static String process( String equation ) {
+		LoggingTool.print( "Processing equation: \"" + equation + "\"." );
+		String processedEquation = equation;
+		for ( int i = 0; i < processedEquation.length(); i++ ) {
+			if ( processedEquation.charAt( i ) == '(' ) {
+				LoggingTool.print( "Found a '(' at index " + i + ". Will search for preceding operations token." );
+				for ( int u = i - 1; u > 0; u-- ) {
+					if ( processedEquation.charAt( u ) != ' ' ) {
+						char charToken = processedEquation.charAt( u );
+						if ( charToken != '+' && charToken != '-' && charToken != '*' && charToken != '/'
+								&& charToken != '^' ) {
+							LoggingTool.print( "Preceding operator not found. Inserting a '*'." );
+							processedEquation =
+									processedEquation.substring( 0, u + 1 ) + " * " + processedEquation.substring( i );
+						} else {
+							LoggingTool.print( "Preceding operator found." );
+						}
+						u = -1;
+					}
+				}
+			}
+		}
+		LoggingTool.print( "Returning processed equation: \"" + processedEquation + "\"." );
+		return processedEquation;
 	}
 
 	private static double internalCalculate( String equation ) {
 		LoggingTool.print( "Evaluating Formula: \"" + equation + "\"." );
 		// Using PEMDAS (i.e. Parentheses, Exponents, Multiplication, Division, Addition, Subtraction
 
+		/////////////////
+		// Parentheses
+		/////////////////
 		for ( int i = 0; i < equation.length(); i++ ) {
-			/////////////////
-			// Parentheses
-			/////////////////
 			if ( equation.charAt( i ) == '(' ) {
 				LoggingTool.print( "Found a '(' at index: " + i + "." );
 				for ( int u = i; u < equation.length(); u++ ) {
@@ -30,58 +55,58 @@ public class Calculator {
 				}
 				throw new NumberFormatException( "Parentheses error" );
 			}
+		}
 
-			/////////////////
-			// Exponents
-			/////////////////
+		/////////////////
+		// Exponents
+		/////////////////
+		for ( int i = 0; i < equation.length(); i++ ) {
 			if ( equation.charAt( i ) == '^' ) {
 				LoggingTool.print( "Found a '^' at index " + i + "." );
 				// Find the start of the prior number
-				for ( int u = i - 2; u >= 0; u-- ) {
-					double priorNumber;
-					if ( equation.charAt( u ) == ' ' || u == 0 ) {
-						if ( isNumber( equation.substring( u, i ) ) ) {
-							priorNumber = Double.parseDouble( equation.substring( u, i ) );
-							// Find the end of the following number
-							for ( int x = i; x < equation.length(); x++ ) {
-								double followingNumber;
-								if ( equation.charAt( x ) == ' ' || x == equation.length() - 1 ) {
-									if ( isNumber( equation.substring( i + 1, x ) ) ) {
-										followingNumber = Double.parseDouble( equation.substring( i + 1, x ) );
-										LoggingTool.print( "Evaluating \"" + priorNumber + " ^ " + followingNumber
-												+ "\"." );
-										return Math.pow( priorNumber, followingNumber );
-									} else {
-										throw new NumberFormatException( "Exponent Error 0" );
-									}
-								}
-							}
-						} else {
-							throw new NumberFormatException( "Exponent error 1" );
-						}
-					}
-				}
-				throw new NumberFormatException( "Exponent error 2" );
+				double priorNumber = Double.parseDouble( equation.substring( 0, i ) );
+				double followingNumber = Double.parseDouble( equation.substring( i + 1 ) );
+
+				return internalCalculate( equation.substring( 0, i - Double.toString( priorNumber ).length() ) + Math
+						.pow( priorNumber, followingNumber ) + equation
+						.substring( i + Double.toString( followingNumber ).length() ) );
 			}
-			/////////////////
-			// Multiplication
-			/////////////////
+		}
 
-			/////////////////
-			// Division
-			/////////////////
+		/////////////////
+		// Multiplication
+		/////////////////
+		for ( int i = 0; i < equation.length(); i++ ) {
+			if ( equation.charAt( i ) == '*' ) {
+				LoggingTool.print( "Found a '*' at index " + i + "." );
+				return multiply( equation.substring( 0, i ), equation.substring( i + 1 ) );
+			}
+		}
 
-			/////////////////
-			// Addition
-			/////////////////
+		/////////////////
+		// Division
+		/////////////////
+		for ( int i = 0; i < equation.length(); i++ ) {
+			if ( equation.charAt( i ) == '/' && equation.length() > i + 1 && equation.charAt( i + 1 ) == ' ' ) {
+				LoggingTool.print( "Found a '/' at index " + i + "." );
+				return divide( equation.substring( 0, i ), equation.substring( i + 1 ) );
+			}
+		}
+
+		/////////////////
+		// Addition
+		/////////////////
+		for ( int i = 0; i < equation.length(); i++ ) {
 			if ( equation.charAt( i ) == '+' ) {
 				LoggingTool.print( "Found a '+' at index " + i + "." );
 				return add( equation.substring( 0, i ), equation.substring( i + 1 ) );
 			}
+		}
 
-			/////////////////
-			// Subtraction
-			/////////////////
+		/////////////////
+		// Subtraction
+		/////////////////
+		for ( int i = 0; i < equation.length(); i++ ) {
 			if ( equation.charAt( i ) == '-' && equation.length() > i + 1 && equation.charAt( i + 1 ) == ' ' ) {
 				LoggingTool.print( "Found a '-' at index " + i + "." );
 				return subtract( equation.substring( 0, i ), equation.substring( i + 1 ) );
@@ -146,6 +171,43 @@ public class Calculator {
 		}
 		LoggingTool.print( "\"" + s + "\" is a number." );
 		return true;
+	}
+
+	private static String findNextToken( String s ) {
+		s = s.trim();
+		LoggingTool.print( "Looking for the next token in \"" + s + "\"." );
+		return findToken( s, 1 );
+	}
+
+	private static String findPriorToken( String s ) {
+		s = s.trim();
+		LoggingTool.print( "Looking for the prior token in \"" + s + "\"." );
+		return findToken( s, -1 );
+	}
+
+	private static String findToken( String s, int direction ) {
+		int startToken;
+		int endToken = -1;
+		if ( direction == 1 ) {
+			startToken = 0;
+		} else if ( direction == -1 ) {
+			startToken = s.length() - 1;
+		} else {
+			throw new IndexOutOfBoundsException( "The findToken method was passed an invalid direction: " + direction );
+		}
+
+		for ( int i = startToken; i >= 0 && i < s.length(); i += direction ) {
+			if ( s.charAt( i ) == ' ' || i == 0 || i == s.length() - 1 ) {
+				endToken = i;
+				i = -1;
+			}
+		}
+
+		if ( endToken == -1 ) {
+			throw new IndexOutOfBoundsException( "The token could not be found." );
+		}
+
+		return s.substring( Math.min( startToken, endToken ), Math.max( startToken, endToken ) );
 	}
 
 	/**
@@ -217,6 +279,64 @@ public class Calculator {
 		} else {
 			LoggingTool.print( "\"" + left + "\" and \"" + right + "\" are both numbers, and will be subtracted." );
 			return Double.parseDouble( left ) - Double.parseDouble( right );
+		}
+	}
+
+	private static double multiply( String left, String right ) {
+		left = left.trim();
+		right = right.trim();
+
+		LoggingTool.print( "Multiplying \"" + left + "\" and \"" + right + "\"." );
+
+		boolean leftIsNumber = isNumber( left );
+		boolean rightIsNumber = isNumber( right );
+
+		if ( !leftIsNumber && !rightIsNumber ) {
+			LoggingTool.print( "Neither \"" + left + "\" nor \"" + right
+					+ "\" are numbers, and are being sent for further calculation before being multiplied." );
+			return multiply( internalCalculate( left ) + "", internalCalculate( right ) + "" );
+		} else if ( !leftIsNumber ) {
+			LoggingTool.print( "\"" + left
+					+ "\" is not a number, and is being sent for further calculation before being multiplied to \""
+					+ right + "\"." );
+			return multiply( internalCalculate( left ) + "", right );
+		} else if ( !rightIsNumber ) {
+			LoggingTool.print( "\"" + right
+					+ "\" is not a number, and is being sent for further calculation before being multiplied to \""
+					+ left + "\"." );
+			return multiply( left, internalCalculate( right ) + "" );
+		} else {
+			LoggingTool.print( "\"" + left + "\" and \"" + right + "\" are both numbers, and will be multiplied." );
+			return Double.parseDouble( left ) * Double.parseDouble( right );
+		}
+	}
+
+	private static double divide( String left, String right ) {
+		left = left.trim();
+		right = right.trim();
+
+		LoggingTool.print( "Dividing \"" + right + "\" from \"" + left + "\"." );
+
+		boolean leftIsNumber = isNumber( left );
+		boolean rightIsNumber = isNumber( right );
+
+		if ( !leftIsNumber && !rightIsNumber ) {
+			LoggingTool.print( "Neither \"" + left + "\" nor \"" + right
+					+ "\" are numbers, and are being sent for further calculation before being divided." );
+			return divide( internalCalculate( left ) + "", internalCalculate( right ) + "" );
+		} else if ( !leftIsNumber ) {
+			LoggingTool.print( "\"" + left
+					+ "\" is not a number, and is being sent for further calculation before being divided by \"" + right
+					+ "\"." );
+			return divide( internalCalculate( left ) + "", right );
+		} else if ( !rightIsNumber ) {
+			LoggingTool.print( "\"" + right
+					+ "\" is not a number, and is being sent for further calculation before being divided from \""
+					+ left + "\"." );
+			return divide( left, internalCalculate( right ) + "" );
+		} else {
+			LoggingTool.print( "\"" + left + "\" and \"" + right + "\" are both numbers, and will be divided." );
+			return Double.parseDouble( left ) / Double.parseDouble( right );
 		}
 	}
 }

@@ -1,11 +1,13 @@
-package eaglezr.taskplanner;
+package eaglezr.taskplanner.system;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
 
-public class TaskTest {
+import static org.junit.Assert.assertTrue;
+
+public class TEST_Task {
 
 	Task task0;
 	Task task1;
@@ -13,7 +15,7 @@ public class TaskTest {
 	Task task3;
 
 	@Before public void setUp() {
-		task0 = new Task( "A", "Task 0", "Do something", 5, null );
+		task0 = new Task( "A", "Task 0", "Do something", 5 );
 		task1 = new Task( "B", "Task 1", "Do something 1", 7, task0 );
 		task2 = new Task( "C", "Task 2", "Do something 2", 3, task0 );
 		task3 = new Task( "D", "Task 3", "Do something 3", 5, task1, task2 );
@@ -45,11 +47,11 @@ public class TaskTest {
 		assertTrue( task3.getDuration() == 5 );
 
 		// 5. Test Prerequisites
-		assertTrue( task0.getPrerequisites() == null );
-		assertTrue( task1.getPrerequisites().length == 1 && task1.getPrerequisites()[0].equals( task0 ) );
-		assertTrue( task2.getPrerequisites().length == 1 && task2.getPrerequisites()[0].equals( task0 ) );
-		assertTrue( task3.getPrerequisites().length == 2 && task3.getPrerequisites()[0].equals( task1 ) && task3
-				.getPrerequisites()[1].equals( task2 ) );
+		assertTrue( task0.getPrerequisites().size() == 0 );
+		assertTrue( task1.getPrerequisites().size() == 1 && task1.getPrerequisites().contains( task0 ) );
+		assertTrue( task2.getPrerequisites().size() == 1 && task2.getPrerequisites().contains( task0 ) );
+		assertTrue( task3.getPrerequisites().size() == 2 && task3.getPrerequisites().contains( task1 ) && task3
+				.getPrerequisites().contains( task2 ) );
 	}
 
 	@Test public void testSetters() {
@@ -69,7 +71,7 @@ public class TaskTest {
 		task0.setPrerequisites( task1 );
 		task1.setPrerequisites( task3 );
 		task2.setPrerequisites( task0, task1, task3 );
-		task3.setPrerequisites( null );
+		task3.setPrerequisites( new ArrayList<>() );
 
 		// 4. Test Description
 		assertTrue( task0.getDescription().equals( "Something else" ) );
@@ -84,11 +86,11 @@ public class TaskTest {
 		assertTrue( task3.getDuration() == 1 );
 
 		// 6. Test Prerequisites
-		assertTrue( task0.getPrerequisites().length == 1 && task0.getPrerequisites()[0].equals( task1 ) );
-		assertTrue( task1.getPrerequisites().length == 1 && task1.getPrerequisites()[0].equals( task3 ) );
-		assertTrue( task2.getPrerequisites().length == 3 && task2.getPrerequisites()[0].equals( task0 ) && task2
-				.getPrerequisites()[1].equals( task1 ) && task2.getPrerequisites()[2].equals( task3 ) );
-		assertTrue( task3.getPrerequisites() == null );
+		assertTrue( task0.getPrerequisites().size() == 1 && task0.getPrerequisites().contains( task1 ) );
+		assertTrue( task1.getPrerequisites().size() == 1 && task1.getPrerequisites().contains( task3 ) );
+		assertTrue( task2.getPrerequisites().size() == 3 && task2.getPrerequisites().contains( task0 ) && task2
+				.getPrerequisites().contains( task1 ) && task2.getPrerequisites().contains( task3 ) );
+		assertTrue( task3.getPrerequisites().size() == 0 );
 	}
 
 	@Test public void TEST_getEarlyStartTime() {
@@ -107,24 +109,59 @@ public class TaskTest {
 
 	@Test public void TEST_getDependencies() {
 		// 1. Test initial dependencies
-		assertTrue( task0.getDependencies().length == 2 && task0.getDependencies()[0].equals( task1 ) && task0
-				.getDependencies()[1].equals( task2 ) );
-		assertTrue( task1.getDependencies().length == 1 && task1.getDependencies()[0].equals( task3 ) );
-		assertTrue( task2.getDependencies().length == 1 && task1.getDependencies()[0].equals( task3 ) );
-		assertTrue( task3.getDependencies() == null );
+		assertTrue( task0.getDependencies().size() == 2 && task0.getDependencies().contains( task1 ) && task0
+				.getDependencies().contains( task2 ) );
+		assertTrue( task1.getDependencies().size() == 1 && task1.getDependencies().contains( task3 ) );
+		assertTrue( task2.getDependencies().size() == 1 && task1.getDependencies().contains( task3 ) );
+		assertTrue( task3.getDependencies().size() == 0 );
 
 		// 2. Change Prereqs
 		task0.setPrerequisites( task1 );
 		task1.setPrerequisites( task3 );
 		task2.setPrerequisites( task0, task1, task3 );
-		task3.setPrerequisites( null );
+		task3.setPrerequisites( new ArrayList<>() );
 
 		// 3. Test new Dependencies
-		assertTrue( task0.getDependencies().length == 1 && task0.getDependencies()[0].equals( task2 ) );
-		assertTrue( task1.getDependencies().length == 2 && task1.getDependencies()[0].equals( task0 ) && task1
-				.getDependencies()[1].equals( task2 ) );
-		assertTrue( task2.getDependencies() == null );
-		assertTrue( task3.getDependencies().length == 2 && task3.getDependencies()[0].equals( task1 ) && task3
-				.getDependencies()[1].equals( task2 ) );
+		assertTrue( task0.getDependencies().size() == 1 && task0.getDependencies().contains( task2 ) );
+		assertTrue( task1.getDependencies().size() == 2 && task1.getDependencies().contains( task0 ) && task1
+				.getDependencies().contains( task2 ) );
+		assertTrue( task2.getDependencies().size() == 0 );
+		assertTrue( task3.getDependencies().size() == 2 && task3.getDependencies().contains( task1 ) && task3
+				.getDependencies().contains( task2 ) );
+	}
+
+	@Test public void TEST_getLateStartTime() {
+		assertTrue( task0.getLateStartTime() == 0 );
+		assertTrue( task1.getLateStartTime() == 5 );
+		assertTrue( task2.getLateStartTime() == 9 );
+		assertTrue( task3.getLateStartTime() == 12 );
+	}
+
+	@Test public void TEST_getLateFinishTime() {
+		assertTrue( task0.getLateFinishTime() == 5 );
+		assertTrue( task1.getLateFinishTime() == 12 );
+		assertTrue( task2.getLateFinishTime() == 12 );
+		assertTrue( task3.getLateFinishTime() == 17 );
+	}
+
+	@Test public void TEST_getSlackTime() {
+		assertTrue( task0.getSlackTime() == 0 );
+		assertTrue( task1.getSlackTime() == 0 );
+		assertTrue( task2.getSlackTime() == 4 );
+		assertTrue( task3.getSlackTime() == 0 );
+	}
+
+	@Test public void TEST_isStartTask() {
+		assertTrue( task0.isStartTask() );
+		assertTrue( !task1.isStartTask() );
+		assertTrue( !task2.isStartTask() );
+		assertTrue( !task3.isStartTask() );
+	}
+
+	@Test public void TEST_isFinishTask() {
+		assertTrue( !task0.isFinalTask() );
+		assertTrue( !task1.isFinalTask() );
+		assertTrue( !task2.isFinalTask() );
+		assertTrue( task3.isFinalTask() );
 	}
 }

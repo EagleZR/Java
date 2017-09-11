@@ -1,6 +1,8 @@
 import eaglezr.support.logs.LoggingTool;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -8,12 +10,10 @@ public class DirectoryExtractor {
 
 	File directory;
 
+	static String[] fileEndings = new String[] {".cpp", ".h", ".docx", ".doc"};
+
 	public DirectoryExtractor( File directory ) {
 		this.directory = directory;
-	}
-
-	public void extract() {
-		extract( directory );
 	}
 
 	public static void extract( File directory ) {
@@ -47,7 +47,7 @@ public class DirectoryExtractor {
 		File[] files = currDir.listFiles();
 		for ( File file : files ) {
 			if ( !file.isDirectory() ) {
-				if ( file.getName().contains( ".cpp" ) || file.getName().contains( ".docx" ) ) {
+				if ( fileIsExtension( file.getName(), fileEndings )) {
 					Files.copy( file.toPath(), new File( newDir.getAbsolutePath() + "\\" + file.getName() ).toPath(),
 							StandardCopyOption.COPY_ATTRIBUTES );
 					LoggingTool.print( "The file \"" + file.getName() + "\" was copied from \"" + file.getParent()
@@ -83,5 +83,19 @@ public class DirectoryExtractor {
 		PrintStream out = new PrintStream( newFile );
 		out.print(
 				"This folder was extracted from the VisualStudio solution. All files ending in \".cpp\" or \".docx\" were extracted." );
+	}
+
+	public static boolean fileIsExtension( String fileName, String... fileEndings ) {
+		for ( String fileEnding : fileEndings ) {
+			if ( fileName.contains( fileEnding ) && fileName.indexOf( fileEnding ) + fileEnding.length() == fileName
+					.length() ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void extract() {
+		extract( directory );
 	}
 }

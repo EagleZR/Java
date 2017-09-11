@@ -30,6 +30,7 @@ public class ExtractorGUI extends Application {
 		textField.setText( chooser.getInitialDirectory().getAbsolutePath() );
 		textField.setMinWidth( 350 );
 		textField.setMinWidth( 350 );
+		textField.setEditable( false );
 
 		directoryChooserButton.setLayoutX( 370 );
 		directoryChooserButton.setLayoutY( 10 );
@@ -71,7 +72,12 @@ public class ExtractorGUI extends Application {
 		primaryStage.show();
 	}
 
-	public void showPopupMessage( String message, Stage primaryStage ) {
+	/**
+	 * Displays a pop-up message using the given string and primary stage.
+	 * @param message The message to be displayed.
+	 * @param primaryStage The stage over which to display the message.
+	 */
+	private void showPopupMessage( String message, Stage primaryStage ) {
 		Label label = new Label( message );
 		BorderPane pane = new BorderPane();
 		pane.setCenter( label );
