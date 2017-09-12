@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: CS3304_HW_Extractor
+Main-Class: eaglezr.file_extractor.CS3304_HW_Extractor
 

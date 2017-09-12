@@ -1,3 +1,5 @@
+package eaglezr.file_extractor;
+
 import eaglezr.javafx.stages.PopupStage;
 import eaglezr.support.logs.LoggingTool;
 import javafx.application.Application;
@@ -17,7 +19,7 @@ public class ExtractorGUI extends Application {
 	private File chosenDirectory;
 
 	@Override public void start( Stage primaryStage ) throws Exception {
-		LoggingTool.getLogger().setDefault( LoggingTool.generateLogPrinter( "ExtractorGUI" ) );
+		LoggingTool.getLogger().setDefault( LoggingTool.generateLogPrinter( "eaglezr.file_extractor.ExtractorGUI" ) );
 		int width = 400;
 		int height = 100;
 		DirectoryChooser chooser = new DirectoryChooser();

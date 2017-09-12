@@ -1,3 +1,5 @@
+package eaglezr.file_extractor;
+
 import eaglezr.support.logs.LoggingTool;
 
 import java.io.File;
