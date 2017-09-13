@@ -104,6 +104,7 @@ public class TeamMembersPane extends FramedPane {
 					newMemberButton.layoutXProperty().setValue( 0 );
 					newMemberButton.layoutYProperty().setValue( 0 );
 				}
+				teamMembers.add( newMemberButton );
 				newMemberButton.prefWidthProperty().bind( membersPane.widthProperty() );
 				addButton.layoutXProperty().bind( newMemberButton.layoutXProperty() );
 				addButton.layoutYProperty()
@@ -158,13 +159,21 @@ public class TeamMembersPane extends FramedPane {
 			// FIXME Debug this
 			int index = teamMembers.indexOf( member );
 			if ( teamMembers.size() == 1 ) {
+				addButton.layoutXProperty().unbind();
+				addButton.layoutYProperty().unbind();
 				addButton.layoutXProperty().setValue( 0 );
 				addButton.layoutYProperty().setValue( 0 );
+			} else if ( index == 0 ) {
+				Button nextMember = teamMembers.get( index + 1 );
+				nextMember.layoutXProperty().unbind();
+				nextMember.layoutYProperty().unbind();
+				nextMember.layoutXProperty().setValue( 0 );
+				nextMember.layoutYProperty().setValue( 0 );
 			} else if ( index + 1 == teamMembers.size() ) {
 				Button prevMember = teamMembers.get( index - 1 );
 				addButton.layoutXProperty().bind( prevMember.layoutXProperty() );
 				addButton.layoutYProperty()
-						.bind( prevMember.layoutYProperty().add( 10 ).add( prevMember.heightProperty() ) );
+						.bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
 			} else {
 				Button prevMember = teamMembers.get( index - 1 );
 				Button nextMember = teamMembers.get( index + 1 );
