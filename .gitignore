@@ -224,6 +224,7 @@ pip-log.txt
 */.idea/*
 */META-INF/*
 */MANIFEST.MF
+*.iml
 
 #############
 ## My generated files
