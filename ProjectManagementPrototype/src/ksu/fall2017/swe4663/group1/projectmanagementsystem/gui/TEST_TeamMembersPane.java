@@ -1,4 +1,4 @@
-package sample;
+package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

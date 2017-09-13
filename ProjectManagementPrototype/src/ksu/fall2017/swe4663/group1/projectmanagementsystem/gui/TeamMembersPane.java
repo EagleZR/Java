@@ -1,4 +1,4 @@
-package sample;
+package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
 import eaglezr.javafx.stages.PopupStage;
 import javafx.scene.Scene;
@@ -21,14 +21,15 @@ public class TeamMembersPane extends FramedPane {
 	private Pane membersPane;
 	private Button addButton;
 	private Stage primaryStage;
+	private List<String> startMembers;
 
 	public TeamMembersPane( Stage primaryStage, String... teamMember ) {
 		this( primaryStage, Arrays.asList( teamMember ) );
 	}
 
-	public TeamMembersPane( Stage primaryStage, List teamMembers ) {
+	public TeamMembersPane( Stage primaryStage, List<String> teamMembers ) {
 		this.primaryStage = primaryStage;
-		teamMembers.addAll( teamMembers );
+		startMembers = teamMembers;
 		setup();
 	}
 
@@ -70,6 +71,14 @@ public class TeamMembersPane extends FramedPane {
 		membersPane.getChildren().add( addButton );
 	}
 
+	public void updateStartMembers() {
+		if ( startMembers != null ) {
+			for ( String member : startMembers ) {
+				addMember( member );
+			}
+		}
+	}
+
 	private void addMember() {
 		Pane pane = new Pane();
 		Scene scene = new Scene( pane, 280, 70 );
@@ -94,25 +103,7 @@ public class TeamMembersPane extends FramedPane {
 		button.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		button.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) ) {
-				Button newMemberButton = new Button( textField.getText() );
-				if ( teamMembers.size() != 0 ) {
-					Button prevMember = teamMembers.get( teamMembers.size() - 1 );
-					newMemberButton.layoutXProperty().bind( prevMember.layoutXProperty() );
-					newMemberButton.layoutYProperty()
-							.bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
-				} else {
-					newMemberButton.layoutXProperty().setValue( 0 );
-					newMemberButton.layoutYProperty().setValue( 0 );
-				}
-				teamMembers.add( newMemberButton );
-				newMemberButton.prefWidthProperty().bind( membersPane.widthProperty() );
-				addButton.layoutXProperty().bind( newMemberButton.layoutXProperty() );
-				addButton.layoutYProperty()
-						.bind( newMemberButton.layoutYProperty().add( newMemberButton.heightProperty() ) );
-				membersPane.getChildren().add( newMemberButton );
-				newMemberButton.setOnAction( i -> {
-					editMember( newMemberButton );
-				} );
+				addMember( textField.getText() );
 				popupStage.close();
 			}
 		} );
@@ -121,6 +112,26 @@ public class TeamMembersPane extends FramedPane {
 		pane.getChildren().add( button );
 
 		popupStage.show();
+	}
+
+	private void addMember( String member ) {
+		Button newMemberButton = new Button( member );
+		if ( teamMembers.size() != 0 ) {
+			Button prevMember = teamMembers.get( teamMembers.size() - 1 );
+			newMemberButton.layoutXProperty().bind( prevMember.layoutXProperty() );
+			newMemberButton.layoutYProperty().bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
+		} else {
+			newMemberButton.layoutXProperty().setValue( 0 );
+			newMemberButton.layoutYProperty().setValue( 0 );
+		}
+		teamMembers.add( newMemberButton );
+		newMemberButton.prefWidthProperty().bind( membersPane.widthProperty() );
+		addButton.layoutXProperty().bind( newMemberButton.layoutXProperty() );
+		addButton.layoutYProperty().bind( newMemberButton.layoutYProperty().add( newMemberButton.heightProperty() ) );
+		membersPane.getChildren().add( newMemberButton );
+		newMemberButton.setOnAction( i -> {
+			editMember( newMemberButton );
+		} );
 	}
 
 	private void editMember( Button member ) {
@@ -172,8 +183,7 @@ public class TeamMembersPane extends FramedPane {
 			} else if ( index + 1 == teamMembers.size() ) {
 				Button prevMember = teamMembers.get( index - 1 );
 				addButton.layoutXProperty().bind( prevMember.layoutXProperty() );
-				addButton.layoutYProperty()
-						.bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
+				addButton.layoutYProperty().bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
 			} else {
 				Button prevMember = teamMembers.get( index - 1 );
 				Button nextMember = teamMembers.get( index + 1 );

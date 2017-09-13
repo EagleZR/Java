@@ -1,4 +1,4 @@
-package sample;
+package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
