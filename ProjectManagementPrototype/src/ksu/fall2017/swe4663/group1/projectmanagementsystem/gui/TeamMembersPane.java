@@ -10,27 +10,26 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class TeamMembersPane extends FramedPane {
 
-	private ArrayList<Button> teamMembers = new ArrayList<>();
+	private ArrayList<Button> teamMembersButtons = new ArrayList<>();
 	private Pane membersPane;
 	private Button addButton;
 	private Stage primaryStage;
-	private List<String> startMembers;
+	private Team team;
 
-	public TeamMembersPane( Stage primaryStage, String... teamMember ) {
-		this( primaryStage, Arrays.asList( teamMember ) );
-	}
-
-	public TeamMembersPane( Stage primaryStage, List<String> teamMembers ) {
+	public TeamMembersPane( Stage primaryStage, Team team ) {
 		this.primaryStage = primaryStage;
-		startMembers = teamMembers;
+		this.team = team;
 		setup();
+		for ( Person person : team.getMembers() ) {
+			addMember( person.getName() );
+		}
 	}
 
 	private void setup() {
@@ -71,14 +70,6 @@ public class TeamMembersPane extends FramedPane {
 		membersPane.getChildren().add( addButton );
 	}
 
-	public void updateStartMembers() {
-		if ( startMembers != null ) {
-			for ( String member : startMembers ) {
-				addMember( member );
-			}
-		}
-	}
-
 	private void addMember() {
 		Pane pane = new Pane();
 		Scene scene = new Scene( pane, 280, 70 );
@@ -116,15 +107,15 @@ public class TeamMembersPane extends FramedPane {
 
 	private void addMember( String member ) {
 		Button newMemberButton = new Button( member );
-		if ( teamMembers.size() != 0 ) {
-			Button prevMember = teamMembers.get( teamMembers.size() - 1 );
+		if ( teamMembersButtons.size() != 0 ) {
+			Button prevMember = teamMembersButtons.get( teamMembersButtons.size() - 1 );
 			newMemberButton.layoutXProperty().bind( prevMember.layoutXProperty() );
 			newMemberButton.layoutYProperty().bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
 		} else {
 			newMemberButton.layoutXProperty().setValue( 0 );
 			newMemberButton.layoutYProperty().setValue( 0 );
 		}
-		teamMembers.add( newMemberButton );
+		teamMembersButtons.add( newMemberButton );
 		newMemberButton.prefWidthProperty().bind( membersPane.widthProperty() );
 		addButton.layoutXProperty().bind( newMemberButton.layoutXProperty() );
 		addButton.layoutYProperty().bind( newMemberButton.layoutYProperty().add( newMemberButton.heightProperty() ) );
@@ -168,31 +159,31 @@ public class TeamMembersPane extends FramedPane {
 		delete.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		delete.setOnAction( e -> {
 			// FIXME Debug this
-			int index = teamMembers.indexOf( member );
-			if ( teamMembers.size() == 1 ) {
+			int index = teamMembersButtons.indexOf( member );
+			if ( teamMembersButtons.size() == 1 ) {
 				addButton.layoutXProperty().unbind();
 				addButton.layoutYProperty().unbind();
 				addButton.layoutXProperty().setValue( 0 );
 				addButton.layoutYProperty().setValue( 0 );
 			} else if ( index == 0 ) {
-				Button nextMember = teamMembers.get( index + 1 );
+				Button nextMember = teamMembersButtons.get( index + 1 );
 				nextMember.layoutXProperty().unbind();
 				nextMember.layoutYProperty().unbind();
 				nextMember.layoutXProperty().setValue( 0 );
 				nextMember.layoutYProperty().setValue( 0 );
-			} else if ( index + 1 == teamMembers.size() ) {
-				Button prevMember = teamMembers.get( index - 1 );
+			} else if ( index + 1 == teamMembersButtons.size() ) {
+				Button prevMember = teamMembersButtons.get( index - 1 );
 				addButton.layoutXProperty().bind( prevMember.layoutXProperty() );
 				addButton.layoutYProperty().bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
 			} else {
-				Button prevMember = teamMembers.get( index - 1 );
-				Button nextMember = teamMembers.get( index + 1 );
+				Button prevMember = teamMembersButtons.get( index - 1 );
+				Button nextMember = teamMembersButtons.get( index + 1 );
 				nextMember.layoutXProperty().bind( prevMember.layoutXProperty() );
 				nextMember.layoutYProperty()
 						.bind( prevMember.layoutYProperty().add( 10 ).add( prevMember.heightProperty() ) );
 			}
 			membersPane.getChildren().remove( member );
-			teamMembers.remove( member );
+			teamMembersButtons.remove( member );
 			popupStage.close();
 		} );
 

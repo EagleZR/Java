@@ -2,28 +2,23 @@ package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Manager;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
 
 public class ProjectOwnerPane extends FramedPane {
 
-	private String manager;
+	private Manager manager;
 	private Label label;
-	private TextField textField;
 	private Button button;
 
-	public ProjectOwnerPane() {
-		manager = "";
-		setup();
-	}
-
-	public ProjectOwnerPane( String manager ) {
-		this.manager = manager;
+	public ProjectOwnerPane( Team team ) {
+		this.manager = team.getManager();
 		setup();
 	}
 
 	private void setup() {
 		// Draw Label
-		label = new Label( "");
+		label = new Label( "" );
 		label.prefWidthProperty()
 				.bind( this.widthProperty().subtract( this.widthProperty().divide( 10 ).multiply( 2 ) ) );
 		label.layoutXProperty().bind( this.widthProperty().divide( 10 ) );
@@ -31,36 +26,30 @@ public class ProjectOwnerPane extends FramedPane {
 
 		this.getChildren().add( label );
 
+		// TODO Draw ScrollPane of Person Buttons
+
 		// Draw Update Button
 		button = new Button( "Update" );
 		button.setOnAction( e -> {
-			updateManager( this.textField.getText());
+			updateManager( this.textField.getText() );
 			update();
 		} );
 		this.getChildren().add( button );
 
-		// Draw Text Field
-		textField = new TextField();
-		textField.prefWidthProperty().bind( label.prefWidthProperty().subtract( button.widthProperty() )
-				.subtract( widthProperty().divide( 10 ) ) );
-		textField.layoutXProperty().bind( label.layoutXProperty() );
-		textField.layoutYProperty().bind( label.layoutYProperty().add( this.heightProperty().divide( 20 ) )
-				.add( label.heightProperty() ) );
+		// TODO Draw Add New Manager Button
 
-		this.getChildren().add( textField );
-
-		button.layoutXProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( this.widthProperty().divide( 10 ) ) );
+		button.layoutXProperty().bind( textField.layoutXProperty().add( textField.widthProperty() )
+				.add( this.widthProperty().divide( 10 ) ) );
 		button.layoutYProperty().bind( textField.layoutYProperty() );
 
 		update();
 	}
 
 	private void update() {
-		label.setText( "Project Manager: " + manager );
-		textField.clear();
+		label.setText( "Project Manager: " + manager.getName() );
 	}
 
-	public void updateManager(String manager) {
+	public void updateManager( Manager manager ) {
 		this.manager = manager;
 	}
 }
