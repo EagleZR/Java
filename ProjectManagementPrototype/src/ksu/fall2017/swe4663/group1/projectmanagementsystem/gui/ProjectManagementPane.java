@@ -1,5 +1,6 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
+import eaglezr.support.errorsystem.ErrorPopupSystem;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
@@ -8,10 +9,21 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ProjectManagementPane extends BorderPane {
-	
-	public ProjectManagementPane(Stage primaryStage) {
+
+	File saveFile;
+	Team team;
+
+	public ProjectManagementPane( Stage primaryStage, Config config, Team team ) {
+		this.saveFile = config.previousSave;
+		this.team = team;
+
 		// Initialize primary panes
 		BorderPane contentPane = new BorderPane();
 		this.setCenter( contentPane );
@@ -23,9 +35,9 @@ public class ProjectManagementPane extends BorderPane {
 		////////////////////////////////////
 		GeneralPane generalPane = new GeneralPane( primaryStage );
 		RequirementsPane requirementsPane = new RequirementsPane();
-		EffortPane effortPane = new EffortPane();
+		HourLogPane hourLogPane = new HourLogPane();
 		contentPane.setCenter( generalPane );
-		generalPane.prefWidthProperty().bind(contentPane.widthProperty());
+		generalPane.prefWidthProperty().bind( contentPane.widthProperty() );
 
 		////////////////////////////////////
 		// Initialize tabs
@@ -43,7 +55,8 @@ public class ProjectManagementPane extends BorderPane {
 		// Requirements
 		Button requirements = new Button( "Requirements" );
 		requirements.prefWidthProperty().bind( generalPaneButton.widthProperty() );
-		requirements.layoutXProperty().bind( generalPaneButton.layoutXProperty().add( generalPaneButton.widthProperty() ) );
+		requirements.layoutXProperty()
+				.bind( generalPaneButton.layoutXProperty().add( generalPaneButton.widthProperty() ) );
 		requirements.layoutYProperty().bind( generalPaneButton.layoutYProperty() );
 
 		// Hours Expended
@@ -67,7 +80,7 @@ public class ProjectManagementPane extends BorderPane {
 			hoursExpended.setDefaultButton( false );
 		} );
 		hoursExpended.setOnAction( e -> {
-			contentPane.setCenter( effortPane );
+			contentPane.setCenter( hourLogPane );
 			generalPaneButton.setDefaultButton( false );
 			requirements.setDefaultButton( false );
 			hoursExpended.setDefaultButton( true );
@@ -77,21 +90,29 @@ public class ProjectManagementPane extends BorderPane {
 	}
 
 	private MenuBar getMenuBar() {
-		MenuBar menuBar = new MenuBar(  );
+		MenuBar menuBar = new MenuBar();
 
 		// File
 		Menu file = new Menu( "File" );
 		MenuItem newProject = new MenuItem( "New" );
 		newProject.setOnAction( e -> {
-			// TODO Generate a new project
+			this.team = new Team();
 		} );
 		MenuItem save = new MenuItem( "Save" );
-		save.setOnAction( e -> {
-			// TODO Save the file
-		} );
 		MenuItem saveAs = new MenuItem( "Save As" );
+		save.setOnAction( e -> {
+			if ( saveFile == null ) {
+				saveAs.fire();
+			} else {
+				try {
+					Team.save( this.team, this.saveFile );
+				} catch ( IOException e1 ) {
+					ErrorPopupSystem.displayMessage( "The file could not be saved." );
+				}
+			}
+		} );
 		saveAs.setOnAction( e -> {
-			// TODO Save the file
+			// TODO SaveAs the file
 		} );
 		MenuItem load = new MenuItem( "Load" );
 		load.setOnAction( e -> {
@@ -101,7 +122,7 @@ public class ProjectManagementPane extends BorderPane {
 		exit.setOnAction( e -> {
 			// TODO Exit stuff?
 			Platform.exit();
-		});
+		} );
 		file.getItems().addAll( save, saveAs, load, exit );
 
 		// Options

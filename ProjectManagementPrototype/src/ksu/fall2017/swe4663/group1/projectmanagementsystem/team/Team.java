@@ -1,14 +1,14 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.effort.Effort;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.effort.ProjectEffort;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHours;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.ProjectHourLog;
 
 import java.io.*;
 import java.util.LinkedList;
 
 /**
  * A representation of a project team. The team consists of {@link Person} instances, some of which are flagged as a
- * manager. The team also comes with an associated {@link ProjectEffort} that records the submitted {@link Effort}s
+ * manager. The team also comes with an associated {@link ProjectHourLog} that records the submitted {@link WorkedHours}s
  * submitted by each of the {@link Person}s on this team.
  */
 public class Team implements Serializable {
@@ -16,7 +16,7 @@ public class Team implements Serializable {
 	private static final long serialVersionUID = -105595693545291325L;
 	private static String saveDirectory = "saves/";
 	private LinkedList<Person> teamMembers;
-	private ProjectEffort projectEffort;
+	private ProjectHourLog projectHourLog;
 
 	public Team( Person... teamMembers ) {
 		this.teamMembers = new LinkedList<>();
@@ -25,30 +25,40 @@ public class Team implements Serializable {
 
 	public static void save( Team team, String fileName ) throws IOException {
 		File file = new File( saveDirectory + fileName );
-		file.createNewFile();
-		ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( file ) );
+		save( team, file );
+	}
+
+	public static void save( Team team, File saveFile ) throws IOException {
+		if ( !saveFile.exists() ) {
+			saveFile.createNewFile();
+		}
+		ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( saveFile ) );
 		out.writeObject( team );
 	}
 
 	public static Team load( String fileName ) throws IOException, ClassNotFoundException {
 		File file = new File( saveDirectory + fileName ); // LATER FileNotFoundException ?
-		if ( !file.exists() ) {
-			throw new FileNotFoundException( "The File, " + fileName + " could not be located." );
+		return load( file );
+	}
+
+	public static Team load( File loadFile ) throws IOException, ClassNotFoundException {
+		if ( !loadFile.exists() ) {
+			throw new FileNotFoundException( "The File, " + loadFile.getName() + " could not be located." );
 		}
-		ObjectInputStream in = new ObjectInputStream( new FileInputStream( file ) );
+		ObjectInputStream in = new ObjectInputStream( new FileInputStream( loadFile ) );
 		return (Team) in.readObject();
 	}
 
 	/**
-	 * Returns the {@link ProjectEffort} associated with this team.
+	 * Returns the {@link ProjectHourLog} associated with this team.
 	 *
-	 * @return The {@link ProjectEffort} that belongs to this team.
+	 * @return The {@link ProjectHourLog} that belongs to this team.
 	 */
-	public ProjectEffort getProjectEffort() {
-		if ( projectEffort == null ) {
-			projectEffort = new ProjectEffort();
+	public ProjectHourLog getProjectHourLog() {
+		if ( projectHourLog == null ) {
+			projectHourLog = new ProjectHourLog();
 		}
-		return projectEffort;
+		return projectHourLog;
 	}
 
 	public void addToTeam( Person... teamMembers ) {
@@ -63,16 +73,16 @@ public class Team implements Serializable {
 	}
 
 	/**
-	 * Takes a submitted {@link Effort} from one of this team's {@link Person} members.
+	 * Takes a submitted {@link WorkedHours} from one of this team's {@link Person} members.
 	 *
-	 * @param effort The newly-submitted {@link Effort} from one of this team's members.
-	 * @throws PersonNotOnTeamException If the {@link Person} who completed the {@link Effort} is not on this team.
+	 * @param workedHours The newly-submitted {@link WorkedHours} from one of this team's members.
+	 * @throws PersonNotOnTeamException If the {@link Person} who completed the {@link WorkedHours} is not on this team.
 	 */
-	void registerEffort( Effort effort ) throws PersonNotOnTeamException {
-		if ( !teamMembers.contains( effort.getPerson() ) ) {
-			throw new PersonNotOnTeamException( effort.getPerson() + " is not on this team." );
+	void registerEffort( WorkedHours workedHours ) throws PersonNotOnTeamException {
+		if ( !teamMembers.contains( workedHours.getPerson() ) ) {
+			throw new PersonNotOnTeamException( workedHours.getPerson() + " is not on this team." );
 		}
-		getProjectEffort().registerEffort( effort );
+		getProjectHourLog().registerEffort( workedHours );
 	}
 
 	/**

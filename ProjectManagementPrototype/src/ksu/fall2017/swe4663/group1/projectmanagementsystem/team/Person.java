@@ -1,8 +1,8 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.effort.Effort;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.effort.EffortType;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.effort.InvalidEffortTypeException;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHourType;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHours;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.InvalidWorkedHourTypeException;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -49,12 +49,12 @@ public class Person implements Serializable {
 		this.team = team;
 	}
 
-	public void reportEffort( int duration, EffortType effortType )
-			throws PersonNotOnTeamException, InvalidEffortTypeException {
+	public void reportEffort( int duration, WorkedHourType workedHourType )
+			throws PersonNotOnTeamException, InvalidWorkedHourTypeException {
 		if ( this.team == null ) {
 			throw new PersonNotOnTeamException( this.name + " has not yet been added to a team" );
 		}
-		team.registerEffort( new Effort( this, duration, effortType ) );
+		team.registerEffort( new WorkedHours( this, duration, workedHourType ) );
 	}
 
 	public boolean equals( Person other ) {
