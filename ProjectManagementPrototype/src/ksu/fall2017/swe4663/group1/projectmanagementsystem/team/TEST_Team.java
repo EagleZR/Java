@@ -117,6 +117,7 @@ public class TEST_Team {
 		Team.save( team, "Test Save.save" );
 		Team team2 = Team.load( "Test Save.save" );
 
-		assertEquals( team, team2 );
+		//		assertEquals( team, team2 );
+		assertTrue( team.equals( team2 ) );
 	}
 }

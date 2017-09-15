@@ -57,8 +57,8 @@ public class Person implements Serializable {
 		team.registerEffort( new WorkedHours( this, duration, workedHourType ) );
 	}
 
-	public boolean equals( Person other ) {
-		return this.ID == other.ID;
+	@Override public boolean equals( Object other ) {
+		return other.getClass().equals( Person.class ) && this.ID == ( (Person) other ).ID;
 	}
 
 	public void promote() {

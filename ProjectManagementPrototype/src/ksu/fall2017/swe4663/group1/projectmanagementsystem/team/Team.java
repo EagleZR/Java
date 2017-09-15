@@ -8,8 +8,8 @@ import java.util.LinkedList;
 
 /**
  * A representation of a project team. The team consists of {@link Person} instances, some of which are flagged as a
- * manager. The team also comes with an associated {@link ProjectHourLog} that records the submitted {@link WorkedHours}s
- * submitted by each of the {@link Person}s on this team.
+ * manager. The team also comes with an associated {@link ProjectHourLog} that records the submitted {@link
+ * WorkedHours}s submitted by each of the {@link Person}s on this team.
  */
 public class Team implements Serializable {
 
@@ -76,7 +76,8 @@ public class Team implements Serializable {
 	 * Takes a submitted {@link WorkedHours} from one of this team's {@link Person} members.
 	 *
 	 * @param workedHours The newly-submitted {@link WorkedHours} from one of this team's members.
-	 * @throws PersonNotOnTeamException If the {@link Person} who completed the {@link WorkedHours} is not on this team.
+	 * @throws PersonNotOnTeamException If the {@link Person} who completed the {@link WorkedHours} is not on this
+	 *                                  team.
 	 */
 	void registerEffort( WorkedHours workedHours ) throws PersonNotOnTeamException {
 		if ( !teamMembers.contains( workedHours.getPerson() ) ) {
@@ -119,5 +120,24 @@ public class Team implements Serializable {
 
 	public void demote( Person person ) {
 		person.demote();
+	}
+
+	@Override public boolean equals( Object other ) {
+		Team team;
+		if ( other.getClass().equals( Team.class ) ) {
+			team = (Team) other;
+		} else {
+			return false;
+		}
+		if ( teamMembers.size() != team.teamMembers.size() ) {
+			return false;
+		} else {
+			for ( int i = 0; i < teamMembers.size(); i++ ) {
+				if ( !teamMembers.contains( team.teamMembers.get( i ) ) ) {
+					return false;
+				}
+			}
+		}
+		return this.getProjectHourLog().equals( team.getProjectHourLog() );
 	}
 }

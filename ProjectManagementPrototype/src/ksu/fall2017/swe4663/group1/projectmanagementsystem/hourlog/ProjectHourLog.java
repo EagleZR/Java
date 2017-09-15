@@ -39,12 +39,18 @@ public class ProjectHourLog implements Serializable {
 		this.workedHours.add( newWorkedHours );
 	}
 
-	public boolean equals( ProjectHourLog otherEffort ) {
-		if (this.workedHours.size() != otherEffort.workedHours.size()) {
+	@Override public boolean equals( Object other ) {
+		ProjectHourLog otherHourLog;
+		if ( other.getClass().equals( ProjectHourLog.class ) ) {
+			otherHourLog = (ProjectHourLog) other;
+		} else {
+			return false;
+		}
+		if ( this.workedHours.size() != otherHourLog.workedHours.size() ) {
 			return false;
 		}
 		for ( int i = 0; i < this.workedHours.size(); i++ ) {
-			if (!this.workedHours.get( i ).equals( otherEffort.workedHours.get( i ) )) {
+			if ( !this.workedHours.get( i ).equals( otherHourLog.workedHours.get( i ) ) ) {
 				return false;
 			}
 		}

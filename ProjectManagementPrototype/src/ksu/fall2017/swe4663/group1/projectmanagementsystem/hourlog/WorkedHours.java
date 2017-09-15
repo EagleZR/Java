@@ -11,8 +11,8 @@ public class WorkedHours implements Serializable {
 	private int duration;
 	private WorkedHourType workedHourType;
 
-	public WorkedHours( Person person, int duration, WorkedHourType workedHourType ) throws
-																					 InvalidWorkedHourTypeException {
+	public WorkedHours( Person person, int duration, WorkedHourType workedHourType )
+			throws InvalidWorkedHourTypeException {
 		if ( workedHourType == WorkedHourType.ANY ) {
 			throw new InvalidWorkedHourTypeException( "WorkedHours of type WorkedHourType.ANY cannot be submitted." );
 		}
@@ -37,8 +37,9 @@ public class WorkedHours implements Serializable {
 		return workedHourType;
 	}
 
-	public boolean equals( WorkedHours other ) {
-		return this.person.equals( other.person ) && this.duration == other.duration
-				&& this.workedHourType == other.workedHourType;
+	public boolean equals( Object other ) {
+		return other.getClass().equals( WorkedHours.class ) && this.person.equals( ( (WorkedHours) other ).person )
+				&& this.duration == ( (WorkedHours) other ).duration
+				&& this.workedHourType == ( (WorkedHours) other ).workedHourType;
 	}
 }
