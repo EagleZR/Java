@@ -2,18 +2,25 @@ package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Manager;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.PersonNotOnTeamException;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
 
 public class ProjectOwnerPane extends FramedPane {
 
-	private Manager manager;
+	private Person manager;
 	private Label label;
 	private Button button;
 
-	public ProjectOwnerPane( Team team ) {
-		this.manager = team.getManager();
-		setup();
+	public ProjectOwnerPane( Team team ) throws PersonNotOnTeamException {
+		try {
+			this.manager = team.getManager();
+			setup();
+		} catch ( PersonNotOnTeamException e ) {
+			this.manager = new Person( "" );
+			setup();
+			throw e;
+		}
 	}
 
 	private void setup() {
@@ -31,16 +38,16 @@ public class ProjectOwnerPane extends FramedPane {
 		// Draw Update Button
 		button = new Button( "Update" );
 		button.setOnAction( e -> {
-			updateManager( this.textField.getText() );
+//			updateManager( this.textField.getText() );
 			update();
 		} );
 		this.getChildren().add( button );
 
 		// TODO Draw Add New Manager Button
 
-		button.layoutXProperty().bind( textField.layoutXProperty().add( textField.widthProperty() )
-				.add( this.widthProperty().divide( 10 ) ) );
-		button.layoutYProperty().bind( textField.layoutYProperty() );
+//		button.layoutXProperty().bind( textField.layoutXProperty().add( textField.widthProperty() )
+//				.add( this.widthProperty().divide( 10 ) ) );
+//		button.layoutYProperty().bind( textField.layoutYProperty() );
 
 		update();
 	}
@@ -49,7 +56,7 @@ public class ProjectOwnerPane extends FramedPane {
 		label.setText( "Project Manager: " + manager.getName() );
 	}
 
-	public void updateManager( Manager manager ) {
+	public void updateManager( Person manager ) {
 		this.manager = manager;
 	}
 }
