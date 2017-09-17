@@ -1,8 +1,9 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog;
 
+import eaglezr.support.logs.LoggingTool;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -12,6 +13,7 @@ public class ProjectHourLog implements Serializable {
 	private LinkedList<WorkedHours> workedHours;
 
 	public ProjectHourLog( WorkedHours... workedHours ) {
+		LoggingTool.print( "Constructing new ProjectHourLog." );
 		this.workedHours = new LinkedList<>( Arrays.asList( workedHours ) );
 	}
 
@@ -36,6 +38,7 @@ public class ProjectHourLog implements Serializable {
 	}
 
 	public void registerEffort( WorkedHours newWorkedHours ) {
+		LoggingTool.print( "WorkedHours: Registering new Effort from " + newWorkedHours.toString() + "." );
 		this.workedHours.add( newWorkedHours );
 	}
 

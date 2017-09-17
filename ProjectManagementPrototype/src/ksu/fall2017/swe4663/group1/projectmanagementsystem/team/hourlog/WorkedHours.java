@@ -1,5 +1,6 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog;
 
+import eaglezr.support.logs.LoggingTool;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ public class WorkedHours implements Serializable {
 
 	public WorkedHours( Person person, int duration, WorkedHourType workedHourType )
 			throws InvalidWorkedHourTypeException {
+		LoggingTool.print( "Constructing new WorkedHours." );
 		if ( workedHourType == WorkedHourType.ANY ) {
 			throw new InvalidWorkedHourTypeException( "WorkedHours of type WorkedHourType.ANY cannot be submitted." );
 		}
@@ -41,5 +43,10 @@ public class WorkedHours implements Serializable {
 		return other.getClass().equals( WorkedHours.class ) && this.person.equals( ( (WorkedHours) other ).person )
 				&& this.duration == ( (WorkedHours) other ).duration
 				&& this.workedHourType == ( (WorkedHours) other ).workedHourType;
+	}
+
+	@Override public String toString() {
+		return "Worked Hours: Person: " + person.getName() + ", Worked Hours Type: " + workedHourType + ", Duration: "
+				+ duration;
 	}
 }

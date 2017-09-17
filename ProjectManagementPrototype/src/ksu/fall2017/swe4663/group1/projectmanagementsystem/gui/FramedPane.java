@@ -1,11 +1,13 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
+import eaglezr.support.logs.LoggingTool;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 public class FramedPane extends Pane {
 
 	public FramedPane() {
+		LoggingTool.print( "Constructing new FramedPane." );
 		// Draw Frame
 		Line topLine = new Line( 1, 1, this.getWidth(), 1 );
 		Line rightLine = new Line( this.getWidth(), 1, this.getWidth(), this.getHeight() );

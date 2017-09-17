@@ -1,19 +1,24 @@
-package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
+package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general;
 
+import eaglezr.support.logs.LoggingTool;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.DescriptionPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.ProjectOwnerPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.RisksPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.TeamMembersPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.PersonNotOnTeamException;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
 
 public class GeneralPane extends Pane {
-	
-	public GeneralPane(Stage primaryStage) {
+
+	public GeneralPane( Stage primaryStage, Project project ) {
+		LoggingTool.print( "Constructing new GeneralPane." );
 		// Initialize system
-		Team team = new Team();
 
 		// Description Pane
-		DescriptionPane descriptionPane = new DescriptionPane(
-				"Here would be the description of the program. Edit it if you want, but it won't save after you close it." );
+		LoggingTool.print( "GeneralPane: Creating DescriptionPane in GeneralPane." );
+		DescriptionPane descriptionPane = new DescriptionPane( project );
 		descriptionPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		descriptionPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );
 		descriptionPane.layoutXProperty().setValue( 0 );
@@ -21,28 +26,32 @@ public class GeneralPane extends Pane {
 		this.getChildren().add( descriptionPane );
 
 		// Team Members Pane
-		TeamMembersPane teamMembersPane = new TeamMembersPane( primaryStage, team );
+		LoggingTool.print( "GeneralPane: Creating TeamMembersPane in GeneralPane." );
+		TeamMembersPane teamMembersPane = new TeamMembersPane( primaryStage, project );
 		teamMembersPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		teamMembersPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );
 		teamMembersPane.layoutXProperty().bind( descriptionPane.layoutXProperty() );
-		teamMembersPane.layoutYProperty().bind( descriptionPane.layoutYProperty().add( descriptionPane.heightProperty() ) );
-//		teamMembersPane.updateStartMembers();
+		teamMembersPane.layoutYProperty()
+				.bind( descriptionPane.layoutYProperty().add( descriptionPane.heightProperty() ) );
 		this.getChildren().add( teamMembersPane );
 
 		// Project Owner Pane
+		LoggingTool.print( "GeneralPane: Creating ProjectOwnerPane in GeneralPane." );
 		ProjectOwnerPane projectOwnerPane = null;
 		try {
-			projectOwnerPane = new ProjectOwnerPane( team );
+			projectOwnerPane = new ProjectOwnerPane( project );
 		} catch ( PersonNotOnTeamException e ) {
 			e.printStackTrace();
 		}
 		projectOwnerPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		projectOwnerPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );
-		projectOwnerPane.layoutXProperty().bind( descriptionPane.layoutXProperty().add( descriptionPane.widthProperty() ) );
+		projectOwnerPane.layoutXProperty()
+				.bind( descriptionPane.layoutXProperty().add( descriptionPane.widthProperty() ) );
 		projectOwnerPane.layoutYProperty().bind( descriptionPane.layoutYProperty() );
 		this.getChildren().add( projectOwnerPane );
 
 		// Risks Pane
+		LoggingTool.print( "GeneralPane: Creating RisksPane in GeneralPane." );
 		RisksPane risksPane = new RisksPane();
 		risksPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		risksPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );

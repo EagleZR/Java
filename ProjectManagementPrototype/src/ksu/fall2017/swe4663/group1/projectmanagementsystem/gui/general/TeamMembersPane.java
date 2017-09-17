@@ -1,73 +1,59 @@
-package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
+package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general;
 
 import eaglezr.javafx.stages.PopupStage;
+import eaglezr.support.logs.LoggingTool;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.ButtonScrollPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
 
-import java.util.ArrayList;
+class TeamMembersPane extends FramedPane {
 
-public class TeamMembersPane extends FramedPane {
-
-	private ArrayList<Button> teamMembersButtons = new ArrayList<>();
-	private Pane membersPane;
-	private Button addButton;
 	private Stage primaryStage;
-	private Team team;
+	private Project project;
+	private ButtonScrollPane scrollPane;
 
-	public TeamMembersPane( Stage primaryStage, Team team ) {
+	TeamMembersPane( Stage primaryStage, Project project ) {
+		LoggingTool.print( "Constructing a new TeamMembersPane." );
 		this.primaryStage = primaryStage;
-		this.team = team;
+		this.project = project;
 		setup();
-		for ( Person person : team.getMembers() ) {
-			addMember( person.getName() );
+		for ( Person person : project.getTeam().getMembers() ) {
+			addMember( person );
 		}
 	}
 
 	private void setup() {
 		// Label
+		LoggingTool.print( "TeamMembersPane: Creating title label in TeamMembersPane." );
 		Label label = new Label( "Team Members (Click to edit): " );
 		label.layoutXProperty().setValue( 10 );
 		label.layoutYProperty().setValue( 10 );
 		this.getChildren().add( label );
 
 		// ScrollPane
-		ScrollPane scrollPane = new ScrollPane();
+		LoggingTool.print( "TeamMembersPane: Creating ButtonScrollPane in TeamMembersPane." );
+		scrollPane = new ButtonScrollPane();
 		scrollPane.layoutXProperty().bind( label.layoutXProperty() );
 		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( 5 ).add( label.heightProperty() ) );
 		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
 		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( 25 ).subtract( label.heightProperty() ) );
-		scrollPane.setHbarPolicy( ScrollPane.ScrollBarPolicy.NEVER );
-		scrollPane.setVbarPolicy( ScrollPane.ScrollBarPolicy.ALWAYS );
-		scrollPane.setFitToHeight( true );
-		scrollPane.setFitToWidth( true );
 		this.getChildren().add( scrollPane );
 
-		// Members Pane
-		membersPane = new Pane();
-		scrollPane.setContent( membersPane );
-
-		Rectangle rectangle = new Rectangle( membersPane.getWidth(), membersPane.getHeight(), Color.RED );
-		rectangle.widthProperty().bind( membersPane.widthProperty() );
-		rectangle.heightProperty().bind( membersPane.heightProperty() );
-
 		// Add Button
-		addButton = new Button( "+ Add Member +" );
-		addButton.prefWidthProperty().bind( membersPane.widthProperty() );
-		addButton.layoutXProperty().setValue( 0 );
-		addButton.layoutYProperty().setValue( 0 );
+		LoggingTool.print( "TeamMembersPane: Creating the \"Add Member\" Button in the TeamMembersPane." );
+		Button addButton = new Button( "+ Add Member +" );
 		addButton.setOnAction( e -> {
 			addMember();
 		} );
-		membersPane.getChildren().add( addButton );
+		scrollPane.setLastButton( addButton );
 	}
 
 	private void addMember() {
@@ -94,7 +80,11 @@ public class TeamMembersPane extends FramedPane {
 		button.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		button.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) ) {
-				addMember( textField.getText() );
+				// LATER Check how to send message to Manager Pane
+				LoggingTool.print( "TeamMembersPane: Creating a new Person named " + textField.getText() + " in the TeamMembersPane." );
+				Person newMember = new Person( textField.getText() );
+				project.getTeam().addToTeam( newMember );
+				addMember( newMember );
 				popupStage.close();
 			}
 		} );
@@ -105,27 +95,17 @@ public class TeamMembersPane extends FramedPane {
 		popupStage.show();
 	}
 
-	private void addMember( String member ) {
-		Button newMemberButton = new Button( member );
-		if ( teamMembersButtons.size() != 0 ) {
-			Button prevMember = teamMembersButtons.get( teamMembersButtons.size() - 1 );
-			newMemberButton.layoutXProperty().bind( prevMember.layoutXProperty() );
-			newMemberButton.layoutYProperty().bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
-		} else {
-			newMemberButton.layoutXProperty().setValue( 0 );
-			newMemberButton.layoutYProperty().setValue( 0 );
-		}
-		teamMembersButtons.add( newMemberButton );
-		newMemberButton.prefWidthProperty().bind( membersPane.widthProperty() );
-		addButton.layoutXProperty().bind( newMemberButton.layoutXProperty() );
-		addButton.layoutYProperty().bind( newMemberButton.layoutYProperty().add( newMemberButton.heightProperty() ) );
-		membersPane.getChildren().add( newMemberButton );
+	private void addMember( Person person ) {
+		LoggingTool.print( "TeamMembersPane: Adding " + person.getName() + " to the TeamMembersPane." );
+		PersonButton newMemberButton = new PersonButton( person );
+		scrollPane.addButton( newMemberButton );
 		newMemberButton.setOnAction( i -> {
 			editMember( newMemberButton );
 		} );
 	}
 
-	private void editMember( Button member ) {
+	private void editMember( PersonButton member ) {
+		LoggingTool.print( "TeamMembersPane: Editing " + member.getPerson().getName() + " in the TeamMembersPane." );
 		Pane pane = new Pane();
 		Scene scene = new Scene( pane, 280, 70 );
 		PopupStage popupStage = new PopupStage( scene, primaryStage );
@@ -138,6 +118,7 @@ public class TeamMembersPane extends FramedPane {
 
 		// Text Field
 		TextField textField = new TextField();
+		textField.setText( member.getText() );
 		textField.layoutXProperty().bind( label.layoutXProperty().add( label.widthProperty() ).add( 5 ) );
 		textField.layoutYProperty().bind( label.layoutYProperty() );
 		pane.getChildren().add( textField );
@@ -148,9 +129,11 @@ public class TeamMembersPane extends FramedPane {
 		edit.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		edit.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) && !textField.getText().equals( edit.getText() ) ) {
-				member.setText( textField.getText() );
-				popupStage.close();
+				LoggingTool.print( "TeamMembersPane: Changing the name of " + member.getPerson().getName() + " to " + textField.getText()
+						+ "in the TeamMembersPane." );
+				member.changeName( textField.getText() );
 			}
+			popupStage.close();
 		} );
 
 		// Delete Button
@@ -158,32 +141,8 @@ public class TeamMembersPane extends FramedPane {
 		delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( 5 ) );
 		delete.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		delete.setOnAction( e -> {
-			// FIXME Debug this
-			int index = teamMembersButtons.indexOf( member );
-			if ( teamMembersButtons.size() == 1 ) {
-				addButton.layoutXProperty().unbind();
-				addButton.layoutYProperty().unbind();
-				addButton.layoutXProperty().setValue( 0 );
-				addButton.layoutYProperty().setValue( 0 );
-			} else if ( index == 0 ) {
-				Button nextMember = teamMembersButtons.get( index + 1 );
-				nextMember.layoutXProperty().unbind();
-				nextMember.layoutYProperty().unbind();
-				nextMember.layoutXProperty().setValue( 0 );
-				nextMember.layoutYProperty().setValue( 0 );
-			} else if ( index + 1 == teamMembersButtons.size() ) {
-				Button prevMember = teamMembersButtons.get( index - 1 );
-				addButton.layoutXProperty().bind( prevMember.layoutXProperty() );
-				addButton.layoutYProperty().bind( prevMember.layoutYProperty().add( prevMember.heightProperty() ) );
-			} else {
-				Button prevMember = teamMembersButtons.get( index - 1 );
-				Button nextMember = teamMembersButtons.get( index + 1 );
-				nextMember.layoutXProperty().bind( prevMember.layoutXProperty() );
-				nextMember.layoutYProperty()
-						.bind( prevMember.layoutYProperty().add( 10 ).add( prevMember.heightProperty() ) );
-			}
-			membersPane.getChildren().remove( member );
-			teamMembersButtons.remove( member );
+			LoggingTool.print( "TeamMembersPane: Deleting " + member.getPerson().getName() + " from the TeamMembersPane." );
+			scrollPane.removeButton( member );
 			popupStage.close();
 		} );
 

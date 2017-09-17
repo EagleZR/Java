@@ -1,5 +1,7 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem;
 
+import eaglezr.support.logs.LoggingTool;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -11,6 +13,8 @@ public class Config {
 	public int windowHeight = 600;
 
 	public Config( File configFile ) throws FileNotFoundException {
+		LoggingTool.print( "Creating new Config." );
+		LoggingTool.print( "Config: Reading configuration from file: " + configFile.getAbsolutePath() + "." );
 		Scanner config = new Scanner( configFile );
 		while ( config.hasNextLine() ) {
 			parseSettingLine( config.nextLine() );
@@ -23,14 +27,19 @@ public class Config {
 	 * @param settingLine
 	 */
 	private void parseSettingLine( String settingLine ) {
-		if ( settingLine.charAt( 0 ) == '#' ) {
-			return;
-		} else if ( settingLine.contains( "save_file_location" ) ) {
-			previousSave = new File( settingLine.substring( settingLine.indexOf( " " ) ) );
-		} else if ( settingLine.contains( "window_width" ) ) {
-			windowWidth = Integer.parseInt( settingLine.substring( settingLine.indexOf( " " ) ) );
-		} else if ( settingLine.contains( "window_height" ) ) {
-			windowHeight = Integer.parseInt( settingLine.substring( settingLine.indexOf( " " ) ) );
+		if ( settingLine.length() > 0 ) {
+			if ( settingLine.charAt( 0 ) == '#' ) {
+				return;
+			} else if ( settingLine.contains( "save_file_location" ) ) {
+				previousSave = new File( settingLine.substring( settingLine.indexOf( " " ) + 1 ) );
+				LoggingTool.print( "Config: Setting previous save as: " + previousSave.getAbsolutePath() + "." );
+			} else if ( settingLine.contains( "window_width" ) ) {
+				windowWidth = Integer.parseInt( settingLine.substring( settingLine.indexOf( " " ) + 1 ) );
+				LoggingTool.print( "Config: Setting window width as: " + windowWidth + "." );
+			} else if ( settingLine.contains( "window_height" ) ) {
+				windowHeight = Integer.parseInt( settingLine.substring( settingLine.indexOf( " " ) + 1 ) );
+				LoggingTool.print( "Config: Setting window height as " + windowHeight + "." );
+			}
 		}
 	}
 }

@@ -1,8 +1,9 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHourType;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHours;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.InvalidWorkedHourTypeException;
+import eaglezr.support.logs.LoggingTool;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.InvalidWorkedHourTypeException;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHourType;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHours;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -15,12 +16,13 @@ public class Person implements Serializable {
 	 * To ensure that no 2 {@link Person} instances have the same ID, at least in the same program.
 	 */
 	private static LinkedList<Long> personIDs;
-	protected final String name; // LATER Final?
 	protected final long ID;
+	protected String name;
 	protected Team team;
 	protected boolean isManager;
 
 	public Person( String name ) {
+		LoggingTool.print( "Constructing new Person with name: " + name + "." );
 		this.name = name;
 
 		if ( personIDs == null ) {
@@ -37,6 +39,11 @@ public class Person implements Serializable {
 		personIDs.add( ID );
 	}
 
+	public void changeName( String name ) {
+		LoggingTool.print( "Person: Changing Person's name from " + this.name + " to " + name + "." );
+		this.name = name;
+	}
+
 	public String getName() {
 		return this.name;
 	}
@@ -46,15 +53,17 @@ public class Person implements Serializable {
 	}
 
 	protected void addToTeam( Team team ) {
+		LoggingTool.print( "Person: Added to team." );
 		this.team = team;
 	}
 
-	public void reportEffort( int duration, WorkedHourType workedHourType )
+	public void reportHours( int duration, WorkedHourType workedHourType )
 			throws PersonNotOnTeamException, InvalidWorkedHourTypeException {
+		LoggingTool.print( "Person: Reporting hours." );
 		if ( this.team == null ) {
 			throw new PersonNotOnTeamException( this.name + " has not yet been added to a team" );
 		}
-		team.registerEffort( new WorkedHours( this, duration, workedHourType ) );
+		team.registerHours( new WorkedHours( this, duration, workedHourType ) );
 	}
 
 	@Override public boolean equals( Object other ) {
@@ -62,10 +71,12 @@ public class Person implements Serializable {
 	}
 
 	public void promote() {
+		LoggingTool.print( "Person: " + name + " has been promoted." );
 		this.isManager = true;
 	}
 
 	public void demote() {
+		LoggingTool.print( "Person: " + name + " has been demoted." );
 		this.isManager = false;
 	}
 }

@@ -113,11 +113,11 @@ public class TEST_Team {
 		assertFalse( team.getManagers().contains( mike ) );
 	}
 
-	@Test public void TEST_save_load() throws IOException, ClassNotFoundException {
-		Team.save( team, "Test Save.save" );
-		Team team2 = Team.load( "Test Save.save" );
-
-		//		assertEquals( team, team2 );
-		assertTrue( team.equals( team2 ) );
-	}
+//	@Test public void TEST_save_load() throws IOException, ClassNotFoundException {
+//		Team.save( team, "Test Save.save" );
+//		Team team2 = Team.load( "Test Save.save" );
+//
+//		//		assertEquals( team, team2 );
+//		assertTrue( team.equals( team2 ) );
+//	}
 }

@@ -1,9 +1,10 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHours;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.ProjectHourLog;
+import eaglezr.support.logs.LoggingTool;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.ProjectHourLog;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHours;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
@@ -14,39 +15,13 @@ import java.util.LinkedList;
 public class Team implements Serializable {
 
 	private static final long serialVersionUID = -105595693545291325L;
-	private static String saveDirectory = "saves/";
 	private LinkedList<Person> teamMembers;
 	private ProjectHourLog projectHourLog;
 
 	public Team( Person... teamMembers ) {
+		LoggingTool.print( "Constructing new Team." );
 		this.teamMembers = new LinkedList<>();
 		addToTeam( teamMembers );
-	}
-
-	public static void save( Team team, String fileName ) throws IOException {
-		File file = new File( saveDirectory + fileName );
-		save( team, file );
-	}
-
-	public static void save( Team team, File saveFile ) throws IOException {
-		if ( !saveFile.exists() ) {
-			saveFile.createNewFile();
-		}
-		ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( saveFile ) );
-		out.writeObject( team );
-	}
-
-	public static Team load( String fileName ) throws IOException, ClassNotFoundException {
-		File file = new File( saveDirectory + fileName ); // LATER FileNotFoundException ?
-		return load( file );
-	}
-
-	public static Team load( File loadFile ) throws IOException, ClassNotFoundException {
-		if ( !loadFile.exists() ) {
-			throw new FileNotFoundException( "The File, " + loadFile.getName() + " could not be located." );
-		}
-		ObjectInputStream in = new ObjectInputStream( new FileInputStream( loadFile ) );
-		return (Team) in.readObject();
 	}
 
 	/**
@@ -63,13 +38,15 @@ public class Team implements Serializable {
 
 	public void addToTeam( Person... teamMembers ) {
 		for ( Person person : teamMembers ) {
+			LoggingTool.print( "Team: " + person.getName() + " was added to the team." );
 			this.teamMembers.add( person );
 			person.addToTeam( this );
 		}
 	}
 
 	public void removeFromTeam( Person person ) {
-
+		LoggingTool.print( "Team: " + person.getName() + " was removed from the team." );
+		// TODO Remove person from team.
 	}
 
 	/**
@@ -79,7 +56,8 @@ public class Team implements Serializable {
 	 * @throws PersonNotOnTeamException If the {@link Person} who completed the {@link WorkedHours} is not on this
 	 *                                  team.
 	 */
-	void registerEffort( WorkedHours workedHours ) throws PersonNotOnTeamException {
+	void registerHours( WorkedHours workedHours ) throws PersonNotOnTeamException {
+		LoggingTool.print( "Team: Hours submitted from " + workedHours.getPerson().name + "." );
 		if ( !teamMembers.contains( workedHours.getPerson() ) ) {
 			throw new PersonNotOnTeamException( workedHours.getPerson() + " is not on this team." );
 		}
@@ -114,11 +92,13 @@ public class Team implements Serializable {
 		return managers;
 	}
 
-	public void promote( Person person ) { // LATER Overly complicated? Why not just use an isManager boolean flag?
+	public void promote( Person person ) {
+		LoggingTool.print( "Team: " + person.name + " has been promoted." );
 		person.promote();
 	}
 
 	public void demote( Person person ) {
+		LoggingTool.print( "Team: " + person.name + " has been demoted." );
 		person.demote();
 	}
 

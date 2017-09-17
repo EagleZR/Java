@@ -1,6 +1,6 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog.WorkedHourType;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHourType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -20,11 +20,11 @@ public class TEST_Person {
 	@Test public void reportEffort() throws Exception {
 		Person programmer = new Person( "Bob" );
 		Team team = new Team( programmer );
-		programmer.reportEffort( 5, WorkedHourType.CODING );
+		programmer.reportHours( 5, WorkedHourType.CODING );
 
 		assertEquals( 5, team.getProjectHourLog().getEffort( programmer ) );
 
-		programmer.reportEffort( 8, WorkedHourType.DESIGNING );
+		programmer.reportHours( 8, WorkedHourType.DESIGNING );
 
 		assertEquals( 5, team.getProjectHourLog().getEffort( WorkedHourType.CODING ) );
 		assertEquals( 8, team.getProjectHourLog().getEffort( WorkedHourType.DESIGNING ) );
@@ -32,7 +32,7 @@ public class TEST_Person {
 
 		Person programmer1 = new Person( "Dexter" );
 		team.addToTeam( programmer1 );
-		programmer1.reportEffort( 2, WorkedHourType.CODING );
+		programmer1.reportHours( 2, WorkedHourType.CODING );
 
 		assertEquals( 7, team.getProjectHourLog().getEffort( WorkedHourType.CODING ) );
 		assertEquals( 8, team.getProjectHourLog().getEffort( WorkedHourType.DESIGNING ) );
