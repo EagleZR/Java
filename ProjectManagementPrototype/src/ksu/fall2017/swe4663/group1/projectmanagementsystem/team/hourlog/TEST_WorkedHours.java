@@ -1,4 +1,4 @@
-package ksu.fall2017.swe4663.group1.projectmanagementsystem.hourlog;
+package ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog;
 
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 import org.junit.Test;
