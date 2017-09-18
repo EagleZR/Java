@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.GeneralPane;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.HourLogPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.hourlog.HoursPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.requirements.RequirementsPane;
 
 import java.io.File;
@@ -42,8 +42,8 @@ public class ProjectManagementPane extends BorderPane {
 		GeneralPane generalPane = new GeneralPane( primaryStage, project );
 		LoggingTool.print( "ProjectManagementPane: Creating RequirementsPane in ProjectManagementPane." );
 		RequirementsPane requirementsPane = new RequirementsPane();
-		LoggingTool.print( "ProjectManagementPane: Creating HourLogPane in ProjectManagementPane." );
-		HourLogPane hourLogPane = new HourLogPane();
+		LoggingTool.print( "ProjectManagementPane: Creating HoursPane in ProjectManagementPane." );
+		HoursPane hoursPane = new HoursPane( project );
 		LoggingTool.print( "ProjectManagementPane: Setting GeneralPane as content in ProjectManagementPane." );
 		contentPane.setCenter( generalPane );
 		generalPane.prefWidthProperty().bind( contentPane.widthProperty() );
@@ -64,7 +64,8 @@ public class ProjectManagementPane extends BorderPane {
 		generalPaneButton.layoutYProperty().setValue( 0 );
 
 		// Requirements
-		LoggingTool.print( "ProjectManagementPane: Creating Button tab for RequirementsPane in ProjectManagementPane." );
+		LoggingTool
+				.print( "ProjectManagementPane: Creating Button tab for RequirementsPane in ProjectManagementPane." );
 		Button requirements = new Button( "Requirements" );
 		requirements.prefWidthProperty().bind( generalPaneButton.widthProperty() );
 		requirements.layoutXProperty()
@@ -72,7 +73,7 @@ public class ProjectManagementPane extends BorderPane {
 		requirements.layoutYProperty().bind( generalPaneButton.layoutYProperty() );
 
 		// Hours Expended
-		LoggingTool.print( "ProjectManagementPane: Creating Button tab for HourLogPane in ProjectManagementPane." );
+		LoggingTool.print( "ProjectManagementPane: Creating Button tab for HoursPane in ProjectManagementPane." );
 		Button hoursLog = new Button( "Hour Log" );
 		hoursLog.prefWidthProperty().bind( generalPaneButton.widthProperty() );
 		hoursLog.layoutXProperty().bind( requirements.layoutXProperty().add( requirements.widthProperty() ) );
@@ -95,8 +96,8 @@ public class ProjectManagementPane extends BorderPane {
 			hoursLog.setDefaultButton( false );
 		} );
 		hoursLog.setOnAction( e -> {
-			LoggingTool.print( "ProjectManagementPane: Setting HourLogPane as content in ProjectManagementPane." );
-			contentPane.setCenter( hourLogPane );
+			LoggingTool.print( "ProjectManagementPane: Setting HoursPane as content in ProjectManagementPane." );
+			contentPane.setCenter( hoursPane );
 			generalPaneButton.setDefaultButton( false );
 			requirements.setDefaultButton( false );
 			hoursLog.setDefaultButton( true );

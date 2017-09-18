@@ -1,6 +1,7 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
 import eaglezr.support.logs.LoggingTool;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.TeamPresenter;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.ProjectHourLog;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHours;
 
@@ -17,10 +18,12 @@ public class Team implements Serializable {
 	private static final long serialVersionUID = -105595693545291325L;
 	private LinkedList<Person> teamMembers;
 	private ProjectHourLog projectHourLog;
+	private LinkedList<TeamPresenter> distro;
 
 	public Team( Person... teamMembers ) {
 		LoggingTool.print( "Constructing new Team." );
 		this.teamMembers = new LinkedList<>();
+		distro = new LinkedList<>();
 		addToTeam( teamMembers );
 	}
 
@@ -42,11 +45,13 @@ public class Team implements Serializable {
 			this.teamMembers.add( person );
 			person.addToTeam( this );
 		}
+		notifyDistro();
 	}
 
 	public void removeFromTeam( Person person ) {
 		LoggingTool.print( "Team: " + person.getName() + " was removed from the team." );
-		// TODO Remove person from team.
+		this.teamMembers.remove( person );
+		notifyDistro();
 	}
 
 	/**
@@ -95,11 +100,27 @@ public class Team implements Serializable {
 	public void promote( Person person ) {
 		LoggingTool.print( "Team: " + person.name + " has been promoted." );
 		person.promote();
+		notifyDistro();
 	}
 
 	public void demote( Person person ) {
 		LoggingTool.print( "Team: " + person.name + " has been demoted." );
 		person.demote();
+		notifyDistro();
+	}
+
+	public void addToDistro( TeamPresenter presenter ) {
+		LoggingTool.print( "Team: Adding " + presenter.getClass() + " to distro." );
+		this.distro.add( presenter );
+	}
+
+	public void notifyDistro() {
+		LoggingTool.print( "Team: Notifying distro of change." );
+		if ( distro.size() > 0 ) {
+			for ( TeamPresenter presenter : distro ) {
+				presenter.updateTeamChange();
+			}
+		}
 	}
 
 	@Override public boolean equals( Object other ) {

@@ -1,10 +1,11 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
 import eaglezr.support.logs.LoggingTool;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
-public class FramedPane extends Pane {
+public abstract class FramedPane extends Pane {
 
 	public FramedPane() {
 		LoggingTool.print( "Constructing new FramedPane." );
@@ -27,5 +28,14 @@ public class FramedPane extends Pane {
 		bottomLine.endYProperty().bind( bottomLine.startYProperty() );
 
 		this.getChildren().addAll( topLine, rightLine, leftLine, bottomLine );
+	}
+
+	public FramedPane( String message ) {
+		this();
+		Label label = new Label( message );
+		label.layoutXProperty().bind( this.widthProperty().divide( 2 ).subtract( label.widthProperty().divide( 2 ) ) );
+		label.layoutYProperty()
+				.bind( this.heightProperty().divide( 2 ).subtract( label.heightProperty().divide( 2 ) ) );
+		this.getChildren().addAll( label );
 	}
 }

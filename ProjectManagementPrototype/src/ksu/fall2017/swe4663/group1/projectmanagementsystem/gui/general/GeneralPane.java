@@ -39,7 +39,7 @@ public class GeneralPane extends Pane {
 		LoggingTool.print( "GeneralPane: Creating ProjectOwnerPane in GeneralPane." );
 		ProjectOwnerPane projectOwnerPane = null;
 		try {
-			projectOwnerPane = new ProjectOwnerPane( project );
+			projectOwnerPane = new ProjectOwnerPane( project, primaryStage );
 		} catch ( PersonNotOnTeamException e ) {
 			e.printStackTrace();
 		}

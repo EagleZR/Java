@@ -42,10 +42,17 @@ public class Person implements Serializable {
 	public void changeName( String name ) {
 		LoggingTool.print( "Person: Changing Person's name from " + this.name + " to " + name + "." );
 		this.name = name;
+		if ( team != null ) {
+			team.notifyDistro();
+		}
 	}
 
 	public String getName() {
 		return this.name;
+	}
+
+	public long getID() {
+		return this.ID;
 	}
 
 	public boolean isManager() {

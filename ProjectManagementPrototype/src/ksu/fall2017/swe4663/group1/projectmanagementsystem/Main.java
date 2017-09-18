@@ -9,9 +9,7 @@ import javafx.stage.Stage;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.ProjectManagementPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Team;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 public class Main extends Application {
 
@@ -26,8 +24,10 @@ public class Main extends Application {
 		////////////////////////////////////
 		// Setup
 		////////////////////////////////////
-		LoggingTool.getLogger().setDefault( LoggingTool.generateLogPrinter( "projectmanager" ) );
-		// TODO Modify LoggingTool so I can retrieve the file it outputs to, then redirect System.out to the file
+		File logFile = LoggingTool.generateLogPrinterFile( "projectmanager" );
+		LoggingTool.getLogger().setDefault( LoggingTool.generateLogPrinter( logFile ) );
+//		System.setOut( new PrintStream( new FileOutputStream( logFile ) ) );
+//		System.setErr( new PrintStream( new FileOutputStream( logFile ) ) );
 		LoggingTool.print( "Main: Initializing Project Manager." );
 		loadSettings();
 		Project project;

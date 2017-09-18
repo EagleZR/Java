@@ -9,24 +9,26 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.ButtonScrollPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButtonScrollPane;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.TeamPresenter;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 
-class TeamMembersPane extends FramedPane {
+class TeamMembersPane extends FramedPane implements TeamPresenter {
 
 	private Stage primaryStage;
 	private Project project;
-	private ButtonScrollPane scrollPane;
+	private PersonButtonScrollPane scrollPane;
 
 	TeamMembersPane( Stage primaryStage, Project project ) {
 		LoggingTool.print( "Constructing a new TeamMembersPane." );
 		this.primaryStage = primaryStage;
 		this.project = project;
+		this.project.getTeam().addToDistro( this );
 		setup();
 		for ( Person person : project.getTeam().getMembers() ) {
-			addMember( person );
+			addPerson( person );
 		}
 	}
 
@@ -39,24 +41,28 @@ class TeamMembersPane extends FramedPane {
 		this.getChildren().add( label );
 
 		// ScrollPane
-		LoggingTool.print( "TeamMembersPane: Creating ButtonScrollPane in TeamMembersPane." );
-		scrollPane = new ButtonScrollPane();
+		LoggingTool.print( "TeamMembersPane: Creating PersonButtonScrollPane in TeamMembersPane." );
+		scrollPane = new PersonButtonScrollPane();
 		scrollPane.layoutXProperty().bind( label.layoutXProperty() );
 		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( 5 ).add( label.heightProperty() ) );
 		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
-		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( 25 ).subtract( label.heightProperty() ) );
 		this.getChildren().add( scrollPane );
 
 		// Add Button
 		LoggingTool.print( "TeamMembersPane: Creating the \"Add Member\" Button in the TeamMembersPane." );
 		Button addButton = new Button( "+ Add Member +" );
+		addButton.layoutXProperty().bind( scrollPane.layoutXProperty() );
+		addButton.layoutYProperty().bind( scrollPane.layoutYProperty().add( scrollPane.heightProperty() ).add( 10 ) );
 		addButton.setOnAction( e -> {
-			addMember();
+			addPerson();
 		} );
-		scrollPane.setLastButton( addButton );
+		this.getChildren().add( addButton );
+
+		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( 35 ).subtract( label.heightProperty() )
+				.subtract( addButton.heightProperty() ) );
 	}
 
-	private void addMember() {
+	private void addPerson() {
 		Pane pane = new Pane();
 		Scene scene = new Scene( pane, 280, 70 );
 		PopupStage popupStage = new PopupStage( scene, primaryStage );
@@ -81,10 +87,11 @@ class TeamMembersPane extends FramedPane {
 		button.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) ) {
 				// LATER Check how to send message to Manager Pane
-				LoggingTool.print( "TeamMembersPane: Creating a new Person named " + textField.getText() + " in the TeamMembersPane." );
+				LoggingTool.print( "TeamMembersPane: Creating a new Person named " + textField.getText()
+						+ " in the TeamMembersPane." );
 				Person newMember = new Person( textField.getText() );
 				project.getTeam().addToTeam( newMember );
-				addMember( newMember );
+				addPerson( newMember );
 				popupStage.close();
 			}
 		} );
@@ -95,7 +102,7 @@ class TeamMembersPane extends FramedPane {
 		popupStage.show();
 	}
 
-	private void addMember( Person person ) {
+	@Override public void addPerson( Person person ) {
 		LoggingTool.print( "TeamMembersPane: Adding " + person.getName() + " to the TeamMembersPane." );
 		PersonButton newMemberButton = new PersonButton( person );
 		scrollPane.addButton( newMemberButton );
@@ -104,8 +111,9 @@ class TeamMembersPane extends FramedPane {
 		} );
 	}
 
-	private void editMember( PersonButton member ) {
-		LoggingTool.print( "TeamMembersPane: Editing " + member.getPerson().getName() + " in the TeamMembersPane." );
+	private void editMember( PersonButton personButton ) {
+		LoggingTool
+				.print( "TeamMembersPane: Editing " + personButton.getPerson().getName() + " in the TeamMembersPane." );
 		Pane pane = new Pane();
 		Scene scene = new Scene( pane, 280, 70 );
 		PopupStage popupStage = new PopupStage( scene, primaryStage );
@@ -118,7 +126,7 @@ class TeamMembersPane extends FramedPane {
 
 		// Text Field
 		TextField textField = new TextField();
-		textField.setText( member.getText() );
+		textField.setText( personButton.getText() );
 		textField.layoutXProperty().bind( label.layoutXProperty().add( label.widthProperty() ).add( 5 ) );
 		textField.layoutYProperty().bind( label.layoutYProperty() );
 		pane.getChildren().add( textField );
@@ -129,9 +137,10 @@ class TeamMembersPane extends FramedPane {
 		edit.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		edit.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) && !textField.getText().equals( edit.getText() ) ) {
-				LoggingTool.print( "TeamMembersPane: Changing the name of " + member.getPerson().getName() + " to " + textField.getText()
-						+ "in the TeamMembersPane." );
-				member.changeName( textField.getText() );
+				LoggingTool
+						.print( "TeamMembersPane: Changing the name of " + personButton.getPerson().getName() + " to "
+								+ textField.getText() + "in the TeamMembersPane." );
+				personButton.changeName( textField.getText() );
 			}
 			popupStage.close();
 		} );
@@ -141,8 +150,10 @@ class TeamMembersPane extends FramedPane {
 		delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( 5 ) );
 		delete.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
 		delete.setOnAction( e -> {
-			LoggingTool.print( "TeamMembersPane: Deleting " + member.getPerson().getName() + " from the TeamMembersPane." );
-			scrollPane.removeButton( member );
+			LoggingTool.print( "TeamMembersPane: Deleting " + personButton.getPerson().getName()
+					+ " from the TeamMembersPane." );
+			removePerson( personButton.getPerson() );
+			scrollPane.removeButton( personButton );
 			popupStage.close();
 		} );
 
@@ -151,5 +162,13 @@ class TeamMembersPane extends FramedPane {
 		pane.getChildren().add( delete );
 
 		popupStage.show();
+	}
+
+	@Override public void removePerson( Person person ) {
+		this.project.getTeam().removeFromTeam( person );
+	}
+
+	@Override public void updateTeamChange() {
+
 	}
 }

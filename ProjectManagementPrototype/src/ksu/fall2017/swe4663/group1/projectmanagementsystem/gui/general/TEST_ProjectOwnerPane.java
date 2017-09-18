@@ -8,7 +8,7 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.ProjectOw
 
 public class TEST_ProjectOwnerPane extends Application {
 	@Override public void start( Stage primaryStage ) throws Exception {
-		ProjectOwnerPane pane = new ProjectOwnerPane( new Project() );
+		ProjectOwnerPane pane = new ProjectOwnerPane( new Project(), primaryStage );
 		Scene scene = new Scene( pane );
 		primaryStage.setScene( scene );
 		primaryStage.show();
