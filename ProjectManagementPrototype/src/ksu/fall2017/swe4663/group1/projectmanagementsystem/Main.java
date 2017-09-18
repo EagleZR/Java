@@ -13,8 +13,8 @@ import java.io.*;
 
 public class Main extends Application {
 
-	File configFile;
-	Config config;
+	private File configFile;
+	private Config config;
 
 	public static void main( String[] args ) {
 		launch( args );
@@ -33,6 +33,7 @@ public class Main extends Application {
 		Project project;
 		try {
 			project = initializeProject();
+			LoggingTool.print( "Main: Previous save file found and loaded." );
 		} catch ( Exception e ) {
 			LoggingTool.print( "Main: Previous save not found. Creating new project." );
 			project = new Project();
@@ -94,6 +95,11 @@ public class Main extends Application {
 	}
 
 	@Override public void stop() {
+		try {
+			config.close();
+		} catch ( IOException e ) {
+			LoggingTool.print( "Config file could not be closed." );
+		}
 		LoggingTool.print( "Program is exiting." );
 		LoggingTool.getLogger().close();
 		Platform.exit();

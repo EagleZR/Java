@@ -1,15 +1,18 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 
+import eaglezr.javafx.stages.PopupStage;
 import eaglezr.support.errorsystem.ErrorPopupSystem;
 import eaglezr.support.logs.LoggingTool;
+import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.GeneralPane;
@@ -21,13 +24,15 @@ import java.io.IOException;
 
 public class ProjectManagementPane extends BorderPane {
 
-	File saveFile;
-	Project project;
+	private Stage primaryStage;
+	private Project project;
+	private Config config;
 
 	public ProjectManagementPane( Stage primaryStage, Config config, Project project ) {
 		LoggingTool.print( "Constructing new ProjectManagementPane." );
-		this.saveFile = config.previousSave;
 		this.project = project;
+		this.config = config;
+		this.primaryStage = primaryStage;
 
 		// Initialize primary panes
 		BorderPane contentPane = new BorderPane();
@@ -39,11 +44,11 @@ public class ProjectManagementPane extends BorderPane {
 		// Initialize content panes
 		////////////////////////////////////
 		LoggingTool.print( "ProjectManagementPane: Creating GeneralPane in ProjectManagementPane." );
-		GeneralPane generalPane = new GeneralPane( primaryStage, project );
+		GeneralPane generalPane = new GeneralPane( primaryStage, project, config );
 		LoggingTool.print( "ProjectManagementPane: Creating RequirementsPane in ProjectManagementPane." );
-		RequirementsPane requirementsPane = new RequirementsPane();
+		RequirementsPane requirementsPane = new RequirementsPane( config );
 		LoggingTool.print( "ProjectManagementPane: Creating HoursPane in ProjectManagementPane." );
-		HoursPane hoursPane = new HoursPane( project );
+		HoursPane hoursPane = new HoursPane( project, config );
 		LoggingTool.print( "ProjectManagementPane: Setting GeneralPane as content in ProjectManagementPane." );
 		contentPane.setCenter( generalPane );
 		generalPane.prefWidthProperty().bind( contentPane.widthProperty() );
@@ -102,7 +107,6 @@ public class ProjectManagementPane extends BorderPane {
 			requirements.setDefaultButton( false );
 			hoursLog.setDefaultButton( true );
 		} );
-
 		tabsPane.getChildren().addAll( generalPaneButton, requirements, hoursLog );
 	}
 
@@ -121,12 +125,12 @@ public class ProjectManagementPane extends BorderPane {
 		MenuItem saveAs = new MenuItem( "Save As" );
 		save.setOnAction( e -> {
 			LoggingTool.print( "ProjectManagementPane: Save button pressed." );
-			if ( saveFile == null ) {
+			if ( !this.config.previousSave.exists() ) {
 				saveAs.fire();
 			} else {
-				LoggingTool.print( "ProjectManagementPane: Saving to " + saveFile.getAbsolutePath() + "." );
+				LoggingTool.print( "ProjectManagementPane: Saving to " + config.previousSave.getAbsolutePath() + "." );
 				try {
-					Project.save( this.project, this.saveFile );
+					Project.save( this.project, this.config.previousSave );
 				} catch ( IOException e1 ) {
 					ErrorPopupSystem.displayMessage( "The file could not be saved." );
 				}
@@ -135,6 +139,32 @@ public class ProjectManagementPane extends BorderPane {
 		saveAs.setOnAction( e -> {
 			// TODO SaveAs the file
 			LoggingTool.print( "ProjectManagementPane: Save As button pressed." );
+			FileChooser chooser = new FileChooser();
+			chooser.setTitle( "Please select where to save the file." );
+			chooser.setInitialDirectory( config.savesDirectory );
+			chooser.setSelectedExtensionFilter( new FileChooser.ExtensionFilter( "Project Save File", ".save" ) );
+
+			Stage fileChooserStage = new Stage();
+			fileChooserStage.initModality( Modality.APPLICATION_MODAL );
+			fileChooserStage.initOwner( primaryStage );
+			fileChooserStage.initStyle( StageStyle.UTILITY );
+			fileChooserStage.resizableProperty().setValue( false );
+
+			File chosenFile = chooser.showSaveDialog( fileChooserStage );
+
+			if ( chosenFile != null ) {
+				config.previousSave = chosenFile;
+
+				try {
+					Project.save( project, config.previousSave );
+				} catch ( IOException e1 ) {
+					ErrorPopupSystem.displayMessage( "Unable to save the file." );
+					LoggingTool.print( "ProjectManagementPane: Unable to save the file." );
+					e1.printStackTrace();
+				}
+			}
+
+			fileChooserStage.close();
 		} );
 		MenuItem load = new MenuItem( "Load" );
 		load.setOnAction( e -> {
@@ -147,7 +177,7 @@ public class ProjectManagementPane extends BorderPane {
 			// TODO Exit stuff?
 			Platform.exit();
 		} );
-		file.getItems().addAll( save, saveAs, load, exit );
+		file.getItems().addAll( newProject, save, saveAs, load, exit );
 
 		// Options
 		Menu options = new Menu( "Options" );

@@ -18,7 +18,7 @@ public class Team implements Serializable {
 	private static final long serialVersionUID = -105595693545291325L;
 	private LinkedList<Person> teamMembers;
 	private ProjectHourLog projectHourLog;
-	private LinkedList<TeamPresenter> distro;
+	private transient LinkedList<TeamPresenter> distro;
 
 	public Team( Person... teamMembers ) {
 		LoggingTool.print( "Constructing new Team." );
@@ -111,6 +111,10 @@ public class Team implements Serializable {
 
 	public void addToDistro( TeamPresenter presenter ) {
 		LoggingTool.print( "Team: Adding " + presenter.getClass() + " to distro." );
+		if (distro == null) {
+			LoggingTool.print( "Team: Distro was uninitialized. Initializing." );
+			distro = new LinkedList<>();
+		}
 		this.distro.add( presenter );
 	}
 

@@ -3,6 +3,7 @@ package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general;
 import eaglezr.support.logs.LoggingTool;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.DescriptionPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.general.ProjectOwnerPane;
@@ -12,13 +13,16 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.PersonNotOnTeamE
 
 public class GeneralPane extends Pane {
 
-	public GeneralPane( Stage primaryStage, Project project ) {
+	private Config config;
+
+	public GeneralPane( Stage primaryStage, Project project, Config config ) {
 		LoggingTool.print( "Constructing new GeneralPane." );
 		// Initialize system
+		this.config = config;
 
 		// Description Pane
 		LoggingTool.print( "GeneralPane: Creating DescriptionPane in GeneralPane." );
-		DescriptionPane descriptionPane = new DescriptionPane( project );
+		DescriptionPane descriptionPane = new DescriptionPane( project, config );
 		descriptionPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		descriptionPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );
 		descriptionPane.layoutXProperty().setValue( 0 );
@@ -27,7 +31,7 @@ public class GeneralPane extends Pane {
 
 		// Team Members Pane
 		LoggingTool.print( "GeneralPane: Creating TeamMembersPane in GeneralPane." );
-		TeamMembersPane teamMembersPane = new TeamMembersPane( primaryStage, project );
+		TeamMembersPane teamMembersPane = new TeamMembersPane( primaryStage, project, config );
 		teamMembersPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		teamMembersPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );
 		teamMembersPane.layoutXProperty().bind( descriptionPane.layoutXProperty() );
@@ -39,7 +43,7 @@ public class GeneralPane extends Pane {
 		LoggingTool.print( "GeneralPane: Creating ProjectOwnerPane in GeneralPane." );
 		ProjectOwnerPane projectOwnerPane = null;
 		try {
-			projectOwnerPane = new ProjectOwnerPane( project, primaryStage );
+			projectOwnerPane = new ProjectOwnerPane( project, primaryStage, config );
 		} catch ( PersonNotOnTeamException e ) {
 			e.printStackTrace();
 		}
@@ -52,7 +56,7 @@ public class GeneralPane extends Pane {
 
 		// Risks Pane
 		LoggingTool.print( "GeneralPane: Creating RisksPane in GeneralPane." );
-		RisksPane risksPane = new RisksPane();
+		RisksPane risksPane = new RisksPane( config );
 		risksPane.prefWidthProperty().bind( this.widthProperty().divide( 2 ) );
 		risksPane.prefHeightProperty().bind( this.heightProperty().divide( 2 ) );
 		risksPane.layoutXProperty().bind( descriptionPane.layoutXProperty().add( descriptionPane.widthProperty() ) );

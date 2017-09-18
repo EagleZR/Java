@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
@@ -20,11 +21,13 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 	private Stage primaryStage;
 	private Project project;
 	private PersonButtonScrollPane scrollPane;
+	private Config config;
 
-	TeamMembersPane( Stage primaryStage, Project project ) {
+	TeamMembersPane( Stage primaryStage, Project project, Config config ) {
 		LoggingTool.print( "Constructing a new TeamMembersPane." );
 		this.primaryStage = primaryStage;
 		this.project = project;
+		this.config = config;
 		this.project.getTeam().addToDistro( this );
 		setup();
 		for ( Person person : project.getTeam().getMembers() ) {
@@ -36,29 +39,29 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 		// Label
 		LoggingTool.print( "TeamMembersPane: Creating title label in TeamMembersPane." );
 		Label label = new Label( "Team Members (Click to edit): " );
-		label.layoutXProperty().setValue( 10 );
-		label.layoutYProperty().setValue( 10 );
+		label.layoutXProperty().setValue( config.buffer );
+		label.layoutYProperty().setValue( config.buffer );
 		this.getChildren().add( label );
 
 		// ScrollPane
 		LoggingTool.print( "TeamMembersPane: Creating PersonButtonScrollPane in TeamMembersPane." );
 		scrollPane = new PersonButtonScrollPane();
 		scrollPane.layoutXProperty().bind( label.layoutXProperty() );
-		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( 5 ).add( label.heightProperty() ) );
-		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
+		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
+		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
 		this.getChildren().add( scrollPane );
 
 		// Add Button
 		LoggingTool.print( "TeamMembersPane: Creating the \"Add Member\" Button in the TeamMembersPane." );
 		Button addButton = new Button( "+ Add Member +" );
 		addButton.layoutXProperty().bind( scrollPane.layoutXProperty() );
-		addButton.layoutYProperty().bind( scrollPane.layoutYProperty().add( scrollPane.heightProperty() ).add( 10 ) );
+		addButton.layoutYProperty().bind( scrollPane.layoutYProperty().add( scrollPane.heightProperty() ).add( config.buffer ) );
 		addButton.setOnAction( e -> {
 			addPerson();
 		} );
 		this.getChildren().add( addButton );
 
-		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( 35 ).subtract( label.heightProperty() )
+		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( config.buffer * 4 ).subtract( label.heightProperty() )
 				.subtract( addButton.heightProperty() ) );
 	}
 
@@ -69,13 +72,13 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 
 		// Label
 		Label label = new Label( "Member's Name: " );
-		label.layoutXProperty().setValue( 10 );
-		label.layoutYProperty().setValue( 10 );
+		label.layoutXProperty().setValue( config.buffer );
+		label.layoutYProperty().setValue( config.buffer );
 		pane.getChildren().add( label );
 
 		// Text Field
 		TextField textField = new TextField();
-		textField.layoutXProperty().bind( label.layoutXProperty().add( label.widthProperty() ).add( 5 ) );
+		textField.layoutXProperty().bind( label.layoutXProperty().add( label.widthProperty() ).add( config.buffer / 2 ) );
 		textField.layoutYProperty().bind( label.layoutYProperty() );
 		pane.getChildren().add( textField );
 
@@ -83,7 +86,7 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 		Button button = new Button( "Add" );
 		button.layoutXProperty()
 				.bind( pane.widthProperty().divide( 2 ).subtract( button.widthProperty().divide( 2 ) ) );
-		button.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
+		button.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
 		button.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) ) {
 				// LATER Check how to send message to Manager Pane
@@ -96,7 +99,7 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 			}
 		} );
 
-		pane.prefWidthProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( 10 ) );
+		pane.prefWidthProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( config.buffer ) );
 		pane.getChildren().add( button );
 
 		popupStage.show();
@@ -120,21 +123,21 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 
 		// Label
 		Label label = new Label( "Member's Name: " );
-		label.layoutXProperty().setValue( 10 );
-		label.layoutYProperty().setValue( 10 );
+		label.layoutXProperty().setValue( config.buffer );
+		label.layoutYProperty().setValue( config.buffer );
 		pane.getChildren().add( label );
 
 		// Text Field
 		TextField textField = new TextField();
 		textField.setText( personButton.getText() );
-		textField.layoutXProperty().bind( label.layoutXProperty().add( label.widthProperty() ).add( 5 ) );
+		textField.layoutXProperty().bind( label.layoutXProperty().add( label.widthProperty() ).add( config.buffer / 2 ) );
 		textField.layoutYProperty().bind( label.layoutYProperty() );
 		pane.getChildren().add( textField );
 
 		// Edit Button
 		Button edit = new Button( "Edit" );
-		edit.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( edit.widthProperty() ).subtract( 5 ) );
-		edit.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
+		edit.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( edit.widthProperty() ).subtract( config.buffer / 2 ) );
+		edit.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
 		edit.setOnAction( e -> {
 			if ( !textField.getText().equals( "" ) && !textField.getText().equals( edit.getText() ) ) {
 				LoggingTool
@@ -147,8 +150,8 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 
 		// Delete Button
 		Button delete = new Button( "Delete" );
-		delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( 5 ) );
-		delete.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
+		delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( config.buffer / 2 ) );
+		delete.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
 		delete.setOnAction( e -> {
 			LoggingTool.print( "TeamMembersPane: Deleting " + personButton.getPerson().getName()
 					+ " from the TeamMembersPane." );
@@ -157,7 +160,7 @@ class TeamMembersPane extends FramedPane implements TeamPresenter {
 			popupStage.close();
 		} );
 
-		pane.prefWidthProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( 10 ) );
+		pane.prefWidthProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( config.buffer ) );
 		pane.getChildren().add( edit );
 		pane.getChildren().add( delete );
 

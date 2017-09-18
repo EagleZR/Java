@@ -46,8 +46,6 @@ public class ExtractorGUI extends Application {
 			chosenDirectory = chooser.showDialog( stage2 );
 
 			textField.setText( chosenDirectory.getAbsolutePath() );
-
-			stage2.show();
 		} );
 
 		Button extractButton = new Button( "Extract" );

@@ -47,7 +47,7 @@ public class PersonButtonScrollPane extends ScrollPane {
 			Button next = buttons.get( 1 );
 			next.layoutYProperty().unbind();
 			next.layoutYProperty().setValue( 0 );
-		} else {
+		} else if ( index != buttons.size() - 1 ) {
 			Button next = buttons.get( index + 1 );
 			Button prev = buttons.get( index - 1 );
 			next.layoutYProperty().bind( prev.layoutYProperty().add( prev.heightProperty() ) );
@@ -72,31 +72,31 @@ public class PersonButtonScrollPane extends ScrollPane {
 		}
 	}
 
-//	@Override public void updateTeamChange() {
-//		LoggingTool.print( "PersonButtonScrollPane: Updating." );
-//		// Check every member on team has button
-//		for ( Person person : team.getMembers() ) {
-//			if ( !containsPerson( person ) ) {
-//				LoggingTool.print( "PersonButtonScrollPane: " + person.getName() + " was not in the list." );
-//				addPerson( person );
-//			}
-//		}
-//
-//		// Check every button has member on team
-//		for ( PersonButton button : buttons ) {
-//			boolean isOnTeam = false;
-//			for ( Person person : team.getMembers() ) {
-//				if ( button.getPerson().equals( person ) ) {
-//					isOnTeam = true;
-//				}
-//			}
-//			if ( !isOnTeam ) {
-//				LoggingTool.print( "PersonButtonScrollPane: Found a Button for person" + button.getText()
-//						+ " who is no longer on the team." );
-//				removeButton( button );
-//			}
-//		}
-//	}
+	//	@Override public void updateTeamChange() {
+	//		LoggingTool.print( "PersonButtonScrollPane: Updating." );
+	//		// Check every member on team has button
+	//		for ( Person person : team.getMembers() ) {
+	//			if ( !containsPerson( person ) ) {
+	//				LoggingTool.print( "PersonButtonScrollPane: " + person.getName() + " was not in the list." );
+	//				addPerson( person );
+	//			}
+	//		}
+	//
+	//		// Check every button has member on team
+	//		for ( PersonButton button : buttons ) {
+	//			boolean isOnTeam = false;
+	//			for ( Person person : team.getMembers() ) {
+	//				if ( button.getPerson().equals( person ) ) {
+	//					isOnTeam = true;
+	//				}
+	//			}
+	//			if ( !isOnTeam ) {
+	//				LoggingTool.print( "PersonButtonScrollPane: Found a Button for person" + button.getText()
+	//						+ " who is no longer on the team." );
+	//				removeButton( button );
+	//			}
+	//		}
+	//	}
 
 	public boolean containsPerson( Person person ) {
 		for ( PersonButton button : buttons ) {

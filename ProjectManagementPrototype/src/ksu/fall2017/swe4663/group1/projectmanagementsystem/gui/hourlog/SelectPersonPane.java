@@ -2,6 +2,7 @@ package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.hourlog;
 
 import eaglezr.support.logs.LoggingTool;
 import javafx.scene.control.Label;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
@@ -11,13 +12,15 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 
 public class SelectPersonPane extends FramedPane implements TeamPresenter {
 
-	Project project;
-	Person selectedPerson;
-	PersonButtonScrollPane scrollPane;
-	Runnable reportChange;
+	private Config config;
+	private Project project;
+	private Person selectedPerson;
+	private PersonButtonScrollPane scrollPane;
+	private Runnable reportChange;
 
-	public SelectPersonPane( Project project ) {
+	public SelectPersonPane( Project project, Config config ) {
 		LoggingTool.print( "Constructing new SelectPersonPane." );
+		this.config = config;
 		this.project = project;
 		this.project.getTeam().addToDistro( this );
 		scrollPane = new PersonButtonScrollPane();
@@ -31,16 +34,16 @@ public class SelectPersonPane extends FramedPane implements TeamPresenter {
 		// Title label
 		LoggingTool.print( "SelectPersonPane: Adding title label." );
 		Label label = new Label( "Select a person: " );
-		label.layoutXProperty().setValue( 10 );
-		label.layoutYProperty().setValue( 10 );
+		label.layoutXProperty().setValue( config.buffer );
+		label.layoutYProperty().setValue( config.buffer );
 		this.getChildren().add( label );
 
 		// ScrollPane
 		LoggingTool.print( "SelectPersonPane: Adding PersonButtonScrollPane." );
-		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
-		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( 25 ).subtract( label.heightProperty() ) );
+		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
+		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( config.buffer * 3 ).subtract( label.heightProperty() ) );
 		scrollPane.layoutXProperty().bind( label.layoutXProperty() );
-		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( label.heightProperty() ).add( 5 ) );
+		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( label.heightProperty() ).add( config.buffer ) );
 		this.getChildren().add( scrollPane );
 	}
 

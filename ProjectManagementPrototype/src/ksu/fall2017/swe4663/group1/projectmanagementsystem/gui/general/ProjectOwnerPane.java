@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
@@ -22,12 +23,14 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 	private Label label;
 	private PersonButtonScrollPane scrollPane;
 	private Stage primaryStage;
+	private Config config;
 
-	public ProjectOwnerPane( Project project, Stage primaryStage ) throws PersonNotOnTeamException {
+	public ProjectOwnerPane( Project project, Stage primaryStage, Config config ) throws PersonNotOnTeamException {
 		LoggingTool.print( "Creating new ProjectOwnerPane." );
 		this.project = project;
 		this.project.getTeam().addToDistro( this );
 		this.primaryStage = primaryStage;
+		this.config = config;
 		try {
 			LoggingTool
 					.print( "Setting " + project.getTeam().getManager() + " as the manager in the ProjectOwnerPane." );
@@ -43,27 +46,26 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 		for ( Person person : project.getTeam().getMembers() ) {
 			addPerson( person );
 		}
+		update();
 	}
 
 	private void setup() {
 		// Draw Label
 		LoggingTool.print( "ProjectOwnerPane: Creating title label in ProjectOwnerPane." );
 		label = new Label( "" );
-		label.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
-		label.layoutXProperty().setValue( 10 );
-		label.layoutYProperty().setValue( 10 );
+		label.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
+		label.layoutXProperty().setValue( config.buffer );
+		label.layoutYProperty().setValue( config.buffer );
 		this.getChildren().add( label );
 
 		// Draw ScrollPane of Person Buttons
 		LoggingTool.print( "ProjectOwnerPane: Creating PersonButtonScrollPane in ProjectOwnerPane." );
 		scrollPane = new PersonButtonScrollPane();
 		scrollPane.layoutXProperty().bind( label.layoutXProperty() );
-		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( 5 ).add( label.heightProperty() ) );
-		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
-		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( 25 ).subtract( label.heightProperty() ) );
+		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
+		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
+		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( config.buffer * 3 ).subtract( label.heightProperty() ) );
 		this.getChildren().add( scrollPane );
-
-		update();
 	}
 
 	private void update() {
@@ -91,13 +93,13 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 
 			Label label = new Label( "Set " + person.getName() + " as the manager?" );
 			label.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( label.widthProperty().divide( 2 ) ) );
-			label.layoutYProperty().setValue( 10 );
+			label.layoutYProperty().setValue( config.buffer );
 			pane.getChildren().add( label );
 
 			// Edit Button
 			Button edit = new Button( "Yes" );
-			edit.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( edit.widthProperty() ).subtract( 5 ) );
-			edit.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
+			edit.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( edit.widthProperty() ).subtract( config.buffer / 2 ) );
+			edit.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
 			edit.setOnAction( a -> {
 				project.getTeam().demote( manager );
 				project.getTeam().promote( person );
@@ -107,8 +109,8 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 
 			// Delete Button
 			Button delete = new Button( "No" );
-			delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( 5 ) );
-			delete.layoutYProperty().bind( label.layoutYProperty().add( 10 ).add( label.heightProperty() ) );
+			delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( config.buffer / 2 ) );
+			delete.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
 			delete.setOnAction( a -> {
 				popupStage.close();
 			} );
@@ -152,6 +154,5 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 		}
 
 		update();
-
 	}
 }

@@ -4,6 +4,8 @@ import eaglezr.support.logs.LoggingTool;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 
@@ -12,10 +14,12 @@ public class DescriptionPane extends FramedPane {
 	private Project project;
 	private TextArea textArea;
 	private Label statusLabel;
+	private Config config;
 
-	public DescriptionPane( Project project ) {
+	public DescriptionPane( Project project, Config config ) {
 		LoggingTool.print( "Constructing new DescriptionPane." );
 		this.project = project;
+		this.config = config;
 		setup();
 	}
 
@@ -23,16 +27,16 @@ public class DescriptionPane extends FramedPane {
 		// Label
 		LoggingTool.print( "DescriptionPane: Creating new title label in DescriptionPane." );
 		Label label = new Label( "Project Description: " );
-		label.layoutXProperty().setValue( 10 );
-		label.layoutYProperty().setValue( 10 );
+		label.layoutXProperty().setValue( config.buffer );
+		label.layoutYProperty().setValue( config.buffer );
 		this.getChildren().add( label );
 
 		// Text Area
 		LoggingTool.print( "DescriptionPane: Creating new TextArea in DescriptionPane." );
 		textArea = new TextArea( project.getDescription() );
-		textArea.prefWidthProperty().bind( this.widthProperty().subtract( 20 ) );
+		textArea.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
 		textArea.layoutXProperty().bind( label.layoutXProperty() );
-		textArea.layoutYProperty().bind( label.layoutYProperty().add( label.heightProperty() ).add( 10 ) );
+		textArea.layoutYProperty().bind( label.layoutYProperty().add( label.heightProperty() ).add( config.buffer ) );
 		textArea.wrapTextProperty().setValue( true );
 		textArea.setOnKeyTyped( e -> {
 			showStatusChanged();
@@ -49,7 +53,7 @@ public class DescriptionPane extends FramedPane {
 		} );
 		update.layoutXProperty()
 				.bind( textArea.layoutXProperty().add( textArea.widthProperty() ).subtract( update.widthProperty() ) );
-		update.layoutYProperty().bind( this.heightProperty().subtract( 10 ).subtract( update.heightProperty() ) );
+		update.layoutYProperty().bind( this.heightProperty().subtract( config.buffer ).subtract( update.heightProperty() ) );
 		this.getChildren().add( update );
 
 		// Reset Button
@@ -60,17 +64,18 @@ public class DescriptionPane extends FramedPane {
 			textArea.setText( this.project.getDescription() );
 			showStatusCurrent();
 		} );
-		reset.layoutXProperty().bind( update.layoutXProperty().subtract( reset.widthProperty().add( 10 ) ) );
+		reset.layoutXProperty().bind( update.layoutXProperty().subtract( reset.widthProperty().add( config.buffer ) ) );
 		reset.layoutYProperty().bind( update.layoutYProperty() );
 		this.getChildren().add( reset );
 
-		textArea.prefHeightProperty().bind( update.layoutYProperty().subtract( textArea.layoutYProperty().add( 10 ) ) );
+		textArea.prefHeightProperty().bind( update.layoutYProperty().subtract( textArea.layoutYProperty().add( config.buffer ) ) );
 
 		// Status Label
 		LoggingTool.print( "DescriptionPane: Creating status label in DescriptionPane." );
 		statusLabel = new Label( "Status: Current" );
 		statusLabel.layoutXProperty().bind( textArea.layoutXProperty() );
 		statusLabel.layoutYProperty().bind( update.layoutYProperty() );
+		statusLabel.setTextFill( Color.GREEN );
 
 		this.getChildren().add( statusLabel );
 	}
@@ -78,11 +83,13 @@ public class DescriptionPane extends FramedPane {
 	private void showStatusChanged() {
 		LoggingTool.print( "DescriptionPane: Updating status label in DescriptionPane to show \"Status: Changed\"." );
 		statusLabel.setText( "Status: Changed" );
+		statusLabel.setTextFill( Color.RED );
 	}
 
 	private void showStatusCurrent() {
 		LoggingTool.print( "DescriptionPane: Updating status label in DescriptionPane to show \"Status: Current\"." );
 		statusLabel.setText( "Status: Current" );
+		statusLabel.setTextFill( Color.GREEN );
 	}
 
 }
