@@ -7,9 +7,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 
-public class DescriptionPane extends FramedPane {
+public class DescriptionPane extends FramedPane implements ProjectPane {
 
 	private Project project;
 	private TextArea textArea;
@@ -53,7 +54,8 @@ public class DescriptionPane extends FramedPane {
 		} );
 		update.layoutXProperty()
 				.bind( textArea.layoutXProperty().add( textArea.widthProperty() ).subtract( update.widthProperty() ) );
-		update.layoutYProperty().bind( this.heightProperty().subtract( config.buffer ).subtract( update.heightProperty() ) );
+		update.layoutYProperty()
+				.bind( this.heightProperty().subtract( config.buffer ).subtract( update.heightProperty() ) );
 		this.getChildren().add( update );
 
 		// Reset Button
@@ -68,7 +70,8 @@ public class DescriptionPane extends FramedPane {
 		reset.layoutYProperty().bind( update.layoutYProperty() );
 		this.getChildren().add( reset );
 
-		textArea.prefHeightProperty().bind( update.layoutYProperty().subtract( textArea.layoutYProperty().add( config.buffer ) ) );
+		textArea.prefHeightProperty()
+				.bind( update.layoutYProperty().subtract( textArea.layoutYProperty().add( config.buffer ) ) );
 
 		// Status Label
 		LoggingTool.print( "DescriptionPane: Creating status label in DescriptionPane." );
@@ -90,6 +93,13 @@ public class DescriptionPane extends FramedPane {
 		LoggingTool.print( "DescriptionPane: Updating status label in DescriptionPane to show \"Status: Current\"." );
 		statusLabel.setText( "Status: Current" );
 		statusLabel.setTextFill( Color.GREEN );
+	}
+
+	public void loadNewProject( Project project ) {
+		LoggingTool.print( "DescriptionPane: Loading new project." );
+		this.project = project;
+		textArea.setText( project.getDescription() );
+		showStatusCurrent();
 	}
 
 }

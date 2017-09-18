@@ -4,13 +4,16 @@ import eaglezr.support.logs.LoggingTool;
 import javafx.scene.control.Label;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButtonScrollPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.TeamPresenter;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 
-public class SelectPersonPane extends FramedPane implements TeamPresenter {
+import java.util.LinkedList;
+
+public class SelectPersonPane extends FramedPane implements TeamPresenter, ProjectPane {
 
 	private Config config;
 	private Project project;
@@ -90,7 +93,8 @@ public class SelectPersonPane extends FramedPane implements TeamPresenter {
 		}
 
 		// Check every button has member on team
-		for ( PersonButton button : scrollPane.getButtons() ) {
+		LinkedList<PersonButton> buttons = (LinkedList<PersonButton>)scrollPane.getButtons().clone();
+		for ( PersonButton button : buttons ) {
 			boolean isOnTeam = false;
 			for ( Person person : project.getTeam().getMembers() ) {
 				if ( button.getPerson().equals( person ) ) {
@@ -103,5 +107,13 @@ public class SelectPersonPane extends FramedPane implements TeamPresenter {
 				scrollPane.removeButton( button );
 			}
 		}
+	}
+
+	@Override public void loadNewProject( Project project ) {
+		this.project = project;
+		scrollPane.clear();
+		this.project.getTeam().addToDistro( this );
+		updateTeamChange();
+		reportChange.run();
 	}
 }

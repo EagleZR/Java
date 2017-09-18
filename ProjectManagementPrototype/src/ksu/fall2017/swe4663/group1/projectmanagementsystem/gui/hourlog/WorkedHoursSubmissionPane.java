@@ -6,11 +6,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHourType;
 
-public class WorkedHoursSubmissionPane extends FramedPane {
+public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane {
 
 	private Config config;
 	private Person selectedPerson;
@@ -35,7 +36,8 @@ public class WorkedHoursSubmissionPane extends FramedPane {
 		personManager = new Label( "Person is a manager?: " );
 		hourType = new Label( "Please select the type of worked hours: " );
 		selectHourType = new ComboBox<>( FXCollections.observableArrayList( WorkedHourType.values() ) );
-		selectHourType.getItems().remove( WorkedHourType.ANY );
+//		selectHourType.getItems().remove( WorkedHourType.ANY );
+//		selectHourType.getItems().add( "" );
 		duration = new Label( "Please select the duration of the worked hours:" );
 		inputDuration = new TextField();
 		submitButton = new Button( "Submit" );
@@ -52,7 +54,8 @@ public class WorkedHoursSubmissionPane extends FramedPane {
 		scrollPane.setHbarPolicy( ScrollPane.ScrollBarPolicy.NEVER );
 		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 4 ) );
 		scrollPane.prefHeightProperty()
-				.bind( this.heightProperty().subtract( config.buffer * 2 ).subtract( submitButton.heightProperty() ).subtract( 4 ) );
+				.bind( this.heightProperty().subtract( config.buffer * 2 ).subtract( submitButton.heightProperty() )
+						.subtract( 4 ) );
 		scrollPane.layoutXProperty().setValue( 2 );
 		scrollPane.layoutYProperty().setValue( 2 );
 		scrollPane.setFitToWidth( true );
@@ -140,5 +143,15 @@ public class WorkedHoursSubmissionPane extends FramedPane {
 				selectedPerson.getName() ) );
 		this.selectedPerson = person;
 		update();
+	}
+
+	private void reset() {
+		selectHourType.setValue( WorkedHourType.ANY );
+		inputDuration.setText( "" );
+		// LATER Send message to SelectPersonPane?
+	}
+
+	@Override public void loadNewProject( Project project ) {
+		reset();
 	}
 }

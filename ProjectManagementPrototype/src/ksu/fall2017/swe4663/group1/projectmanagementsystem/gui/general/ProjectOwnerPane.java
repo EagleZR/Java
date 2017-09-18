@@ -9,6 +9,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButtonScrollPane;
@@ -16,7 +17,9 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.TeamPresenter;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.PersonNotOnTeamException;
 
-public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
+import java.util.LinkedList;
+
+public class ProjectOwnerPane extends FramedPane implements TeamPresenter, ProjectPane {
 
 	private Project project;
 	private Person manager;
@@ -64,7 +67,8 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 		scrollPane.layoutXProperty().bind( label.layoutXProperty() );
 		scrollPane.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
 		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
-		scrollPane.prefHeightProperty().bind( this.heightProperty().subtract( config.buffer * 3 ).subtract( label.heightProperty() ) );
+		scrollPane.prefHeightProperty()
+				.bind( this.heightProperty().subtract( config.buffer * 3 ).subtract( label.heightProperty() ) );
 		this.getChildren().add( scrollPane );
 	}
 
@@ -74,13 +78,14 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 			manager = project.getTeam().getManager();
 		} catch ( PersonNotOnTeamException e ) {
 			LoggingTool.print( "ProjectOwnerPane: Unable to update manager." );
+			manager = null;
 			// LATER Use status label instead?
-			//			ErrorPopupSystem.displayMessage( "Unable to update manager." ); // Probably not a good idea....
+			// ErrorPopupSystem.displayMessage( "Unable to update manager." ); // Probably not a good idea....
 		}
 		for ( PersonButton button : scrollPane.getButtons() ) {
 			button.setDefaultButton( button.getPerson().isManager() );
 		}
-		label.setText( "Project Manager: " + manager.getName() );
+		label.setText( "Project Manager: " + ( manager == null ? "" : manager.getName() ) );
 	}
 
 	@Override public void addPerson( Person person ) {
@@ -92,32 +97,37 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 			PopupStage popupStage = new PopupStage( scene, primaryStage );
 
 			Label label = new Label( "Set " + person.getName() + " as the manager?" );
-			label.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( label.widthProperty().divide( 2 ) ) );
+			label.layoutXProperty()
+					.bind( pane.widthProperty().divide( 2 ).subtract( label.widthProperty().divide( 2 ) ) );
 			label.layoutYProperty().setValue( config.buffer );
 			pane.getChildren().add( label );
 
 			// Edit Button
-			Button edit = new Button( "Yes" );
-			edit.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( edit.widthProperty() ).subtract( config.buffer / 2 ) );
-			edit.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
-			edit.setOnAction( a -> {
-				project.getTeam().demote( manager );
+			Button yes = new Button( "Yes" );
+			yes.layoutXProperty().bind( pane.widthProperty().divide( 2 ).subtract( yes.widthProperty() )
+					.subtract( config.buffer / 2 ) );
+			yes.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
+			yes.setOnAction( a -> {
+				if ( manager != null ) {
+					project.getTeam().demote( manager );
+				}
 				project.getTeam().promote( person );
 				this.manager = person;
 				popupStage.close();
 			} );
 
 			// Delete Button
-			Button delete = new Button( "No" );
-			delete.layoutXProperty().bind( pane.widthProperty().divide( 2 ).add( delete.widthProperty() ).add( config.buffer / 2 ) );
-			delete.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
-			delete.setOnAction( a -> {
+			Button no = new Button( "No" );
+			no.layoutXProperty()
+					.bind( pane.widthProperty().divide( 2 ).add( no.widthProperty() ).add( config.buffer / 2 ) );
+			no.layoutYProperty().bind( label.layoutYProperty().add( config.buffer ).add( label.heightProperty() ) );
+			no.setOnAction( a -> {
 				popupStage.close();
 			} );
 
-//			pane.prefWidthProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( 10 ) );
-			pane.getChildren().add( edit );
-			pane.getChildren().add( delete );
+			//			pane.prefWidthProperty().bind( textField.layoutXProperty().add( textField.widthProperty() ).add( 10 ) );
+			pane.getChildren().add( yes );
+			pane.getChildren().add( no );
 
 			popupStage.show();
 		} );
@@ -139,7 +149,8 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 		}
 
 		// Check every button has member on team
-		for ( PersonButton button : scrollPane.getButtons() ) {
+		LinkedList<PersonButton> buttons = (LinkedList<PersonButton>)scrollPane.getButtons().clone();
+		for ( PersonButton button : buttons ) {
 			boolean isOnTeam = false;
 			for ( Person person : project.getTeam().getMembers() ) {
 				if ( button.getPerson().equals( person ) ) {
@@ -153,6 +164,15 @@ public class ProjectOwnerPane extends FramedPane implements TeamPresenter {
 			}
 		}
 
+		update();
+	}
+
+	@Override public void loadNewProject( Project project ) {
+		LoggingTool.print( "ProjectOwnerPane: Loading new project." );
+		this.project = project;
+		scrollPane.clear();
+		updateTeamChange();
+		this.project.getTeam().addToDistro( this );
 		update();
 	}
 }

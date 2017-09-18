@@ -3,12 +3,13 @@ package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHourType;
 
 // TODO Set an animation (?) so this updates regularly.
 // TODO Make this so it displays in a separate window (On separate thread?)
-public class DebugPane extends Pane {
+public class DebugPane extends Pane implements ProjectPane {
 
 	private static int numModules = 4;
 
@@ -83,5 +84,9 @@ public class DebugPane extends Pane {
 		String requirements = "Requirements: ";
 
 		this.requirements.setText( requirements );
+	}
+
+	@Override public void loadNewProject( Project project ) {
+		this.project = project;
 	}
 }

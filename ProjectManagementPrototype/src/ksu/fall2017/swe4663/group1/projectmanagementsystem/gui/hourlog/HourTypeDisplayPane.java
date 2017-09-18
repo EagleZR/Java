@@ -20,7 +20,7 @@ public class HourTypeDisplayPane extends FramedPane {
 		this.hourLog = project.getTeam().getProjectHourLog();
 		this.hourType = hourType;
 
-		Label label = new Label( hourType.getText() );
+		Label label = new Label( hourType.toString() );
 		label.layoutXProperty().setValue( config.buffer );
 		label.layoutYProperty().setValue( config.buffer );
 		this.getChildren().add( label );

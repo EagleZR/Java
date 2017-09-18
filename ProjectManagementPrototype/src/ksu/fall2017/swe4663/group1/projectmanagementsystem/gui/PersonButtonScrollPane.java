@@ -39,7 +39,9 @@ public class PersonButtonScrollPane extends ScrollPane {
 	}
 
 	public void removeButton( PersonButton button ) {
-		LoggingTool.print( "PersonButtonScrollPane: Removing Button with text: " + button.getText() );
+		LoggingTool.print( "PersonButtonScrollPane: Removing Button with text: " + ( button == null ?
+				"<null>" :
+				button.getText() ) );
 		int index = buttons.indexOf( button );
 		if ( buttons.size() == 1 ) {
 
@@ -47,7 +49,7 @@ public class PersonButtonScrollPane extends ScrollPane {
 			Button next = buttons.get( 1 );
 			next.layoutYProperty().unbind();
 			next.layoutYProperty().setValue( 0 );
-		} else if ( index != buttons.size() - 1 ) {
+		} else if ( index != buttons.size() - 1 && index > 0 ) {
 			Button next = buttons.get( index + 1 );
 			Button prev = buttons.get( index - 1 );
 			next.layoutYProperty().bind( prev.layoutYProperty().add( prev.heightProperty() ) );
@@ -57,7 +59,7 @@ public class PersonButtonScrollPane extends ScrollPane {
 		buttons.remove( button );
 	}
 
-	public List<PersonButton> getButtons() {
+	public LinkedList<PersonButton> getButtons() {
 		return buttons;
 	}
 
@@ -71,32 +73,6 @@ public class PersonButtonScrollPane extends ScrollPane {
 			removeButton( getPersonButton( person ) );
 		}
 	}
-
-	//	@Override public void updateTeamChange() {
-	//		LoggingTool.print( "PersonButtonScrollPane: Updating." );
-	//		// Check every member on team has button
-	//		for ( Person person : team.getMembers() ) {
-	//			if ( !containsPerson( person ) ) {
-	//				LoggingTool.print( "PersonButtonScrollPane: " + person.getName() + " was not in the list." );
-	//				addPerson( person );
-	//			}
-	//		}
-	//
-	//		// Check every button has member on team
-	//		for ( PersonButton button : buttons ) {
-	//			boolean isOnTeam = false;
-	//			for ( Person person : team.getMembers() ) {
-	//				if ( button.getPerson().equals( person ) ) {
-	//					isOnTeam = true;
-	//				}
-	//			}
-	//			if ( !isOnTeam ) {
-	//				LoggingTool.print( "PersonButtonScrollPane: Found a Button for person" + button.getText()
-	//						+ " who is no longer on the team." );
-	//				removeButton( button );
-	//			}
-	//		}
-	//	}
 
 	public boolean containsPerson( Person person ) {
 		for ( PersonButton button : buttons ) {
@@ -121,5 +97,10 @@ public class PersonButtonScrollPane extends ScrollPane {
 			}
 		}
 		return null;
+	}
+
+	public void clear() {
+		this.buttonPane.getChildren().clear();
+		this.buttons.clear();
 	}
 }

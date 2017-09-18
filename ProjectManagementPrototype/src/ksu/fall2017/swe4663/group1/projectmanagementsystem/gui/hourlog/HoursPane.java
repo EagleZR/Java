@@ -4,17 +4,20 @@ import eaglezr.support.logs.LoggingTool;
 import javafx.scene.layout.Pane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 
-public class HoursPane extends Pane {
+public class HoursPane extends Pane implements ProjectPane {
 
 	private Config config;
+	SelectPersonPane selectPersonPane;
+	WorkedHoursSubmissionPane detailsPane;
 
 	public HoursPane( Project project, Config config ) {
 		LoggingTool.print( "Constructing new HoursPane." );
 		// Select Person Pane
 		LoggingTool.print( "HoursPane: Creating new SelectPersonPane." );
-		SelectPersonPane selectPersonPane = new SelectPersonPane( project, config );
+		selectPersonPane = new SelectPersonPane( project, config );
 		selectPersonPane.layoutXProperty().setValue( 0 );
 		selectPersonPane.layoutYProperty().setValue( 0 );
 		selectPersonPane.prefWidthProperty().bind( this.widthProperty().divide( 3 ) );
@@ -23,7 +26,7 @@ public class HoursPane extends Pane {
 
 		// Fill In Details Pane
 		LoggingTool.print( "HoursPane: Creating new WorkedHoursSubmissionPane." );
-		WorkedHoursSubmissionPane detailsPane = new WorkedHoursSubmissionPane( project, config );
+		detailsPane = new WorkedHoursSubmissionPane( project, config );
 		detailsPane.layoutXProperty()
 				.bind( selectPersonPane.layoutXProperty().add( selectPersonPane.widthProperty() ) );
 		detailsPane.layoutYProperty().bind( selectPersonPane.layoutYProperty() );
@@ -40,4 +43,9 @@ public class HoursPane extends Pane {
 			detailsPane.registerNewSelectedPerson( selectPersonPane.getSelectedPerson() );
 		} );
 	}
+
+	public void loadNewProject( Project project ) {
+		selectPersonPane.loadNewProject( project );
+	}
+
 }
