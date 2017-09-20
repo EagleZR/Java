@@ -9,10 +9,10 @@ public class WorkedHours implements Serializable {
 
 	private static final long serialVersionUID = 1777547981787649391L;
 	private Person person;
-	private int duration;
+	private double duration;
 	private WorkedHourType workedHourType;
 
-	public WorkedHours( Person person, int duration, WorkedHourType workedHourType )
+	public WorkedHours( Person person, double duration, WorkedHourType workedHourType )
 			throws InvalidWorkedHourTypeException {
 		LoggingTool.print( "Constructing new WorkedHours." );
 		if ( workedHourType == WorkedHourType.ANY ) {
@@ -31,7 +31,7 @@ public class WorkedHours implements Serializable {
 		return this.person;
 	}
 
-	public int getDuration() {
+	public double getDuration() {
 		return this.duration;
 	}
 

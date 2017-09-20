@@ -12,8 +12,6 @@ public class TEST_WorkedHours {
 		assertTrue( workedHours.getPerson().getName().equals( "Bob" ) );
 		assertTrue( workedHours.getDuration() == 5 );
 		assertTrue( workedHours.getType() == WorkedHourType.CODING );
-
-		// LATER Use setters?
 	}
 
 	@Test (expected = InvalidWorkedHourTypeException.class) public void TEST_EffortManagerException()

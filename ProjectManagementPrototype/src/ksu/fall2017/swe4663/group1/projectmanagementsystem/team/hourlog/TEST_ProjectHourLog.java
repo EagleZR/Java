@@ -60,22 +60,22 @@ public class TEST_ProjectHourLog {
 	}
 
 	@Test public void TEST_getEffortOfType() {
-		assertEquals( 119, projectHourLog.getEffort( WorkedHourType.ANY ) );
-		assertEquals( 16, projectHourLog.getEffort( WorkedHourType.REQUIREMENTS_ANALYSIS ) );
-		assertEquals( 33, projectHourLog.getEffort( WorkedHourType.DESIGNING ) );
-		assertEquals( 51, projectHourLog.getEffort( WorkedHourType.CODING ) );
-		assertEquals( 11, projectHourLog.getEffort( WorkedHourType.TESTING ) );
-		assertEquals( 8, projectHourLog.getEffort( WorkedHourType.PROJECT_MANAGEMENT ) );
+		assertEquals( 119, projectHourLog.getHours( WorkedHourType.ANY ) );
+		assertEquals( 16, projectHourLog.getHours( WorkedHourType.REQUIREMENTS_ANALYSIS ) );
+		assertEquals( 33, projectHourLog.getHours( WorkedHourType.DESIGNING ) );
+		assertEquals( 51, projectHourLog.getHours( WorkedHourType.CODING ) );
+		assertEquals( 11, projectHourLog.getHours( WorkedHourType.TESTING ) );
+		assertEquals( 8, projectHourLog.getHours( WorkedHourType.PROJECT_MANAGEMENT ) );
 	}
 
 	@Test public void TEST_getEffortOfPerson() {
-		assertEquals( 9, projectHourLog.getEffort( p1 ) );
-		assertEquals( 23, projectHourLog.getEffort( p2 ) );
-		assertEquals( 14, projectHourLog.getEffort( p3 ) );
-		assertEquals( 17, projectHourLog.getEffort( p4 ) );
-		assertEquals( 21, projectHourLog.getEffort( p5 ) );
-		assertEquals( 17, projectHourLog.getEffort( p6 ) );
-		assertEquals( 18, projectHourLog.getEffort( p7 ) );
+		assertEquals( 9, projectHourLog.getHours( p1 ) );
+		assertEquals( 23, projectHourLog.getHours( p2 ) );
+		assertEquals( 14, projectHourLog.getHours( p3 ) );
+		assertEquals( 17, projectHourLog.getHours( p4 ) );
+		assertEquals( 21, projectHourLog.getHours( p5 ) );
+		assertEquals( 17, projectHourLog.getHours( p6 ) );
+		assertEquals( 18, projectHourLog.getHours( p7 ) );
 	}
 
 	@Test public void TEST_equals() {

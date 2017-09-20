@@ -66,7 +66,7 @@ public class Team implements Serializable {
 		if ( !teamMembers.contains( workedHours.getPerson() ) ) {
 			throw new PersonNotOnTeamException( workedHours.getPerson() + " is not on this team." );
 		}
-		getProjectHourLog().registerEffort( workedHours );
+		getProjectHourLog().registerHours( workedHours );
 	}
 
 	/**

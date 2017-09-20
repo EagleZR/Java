@@ -17,7 +17,7 @@ public class ProjectHourLog implements Serializable {
 		this.workedHours = new LinkedList<>( Arrays.asList( workedHours ) );
 	}
 
-	public int getEffort( WorkedHourType workedHourType ) {
+	public int getHours( WorkedHourType workedHourType ) {
 		int count = 0;
 		for ( WorkedHours workedHours : this.workedHours ) {
 			if ( workedHours.getType() == workedHourType || workedHourType == WorkedHourType.ANY ) {
@@ -27,7 +27,7 @@ public class ProjectHourLog implements Serializable {
 		return count;
 	}
 
-	public int getEffort( Person person ) {
+	public int getHours( Person person ) {
 		int count = 0;
 		for ( WorkedHours workedHours : this.workedHours ) {
 			if ( workedHours.getPerson().equals( person ) ) {
@@ -37,8 +37,8 @@ public class ProjectHourLog implements Serializable {
 		return count;
 	}
 
-	public void registerEffort( WorkedHours newWorkedHours ) {
-		LoggingTool.print( "WorkedHours: Registering new Effort from " + newWorkedHours.toString() + "." );
+	public void registerHours( WorkedHours newWorkedHours ) {
+		LoggingTool.print( "ProjectHourLog: Registering new Hours: " + newWorkedHours.toString() + "." );
 		this.workedHours.add( newWorkedHours );
 	}
 

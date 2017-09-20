@@ -64,7 +64,7 @@ public class Person implements Serializable {
 		this.team = team;
 	}
 
-	public void reportHours( int duration, WorkedHourType workedHourType )
+	public void reportHours( double duration, WorkedHourType workedHourType )
 			throws PersonNotOnTeamException, InvalidWorkedHourTypeException {
 		LoggingTool.print( "Person: Reporting hours." );
 		if ( this.team == null ) {

@@ -1,5 +1,6 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.hourlog;
 
+import eaglezr.support.errorsystem.ErrorPopupSystem;
 import eaglezr.support.logs.LoggingTool;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
@@ -9,6 +10,8 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.PersonNotOnTeamException;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.InvalidWorkedHourTypeException;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHourType;
 
 public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane {
@@ -36,8 +39,8 @@ public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane
 		personManager = new Label( "Person is a manager?: " );
 		hourType = new Label( "Please select the type of worked hours: " );
 		selectHourType = new ComboBox<>( FXCollections.observableArrayList( WorkedHourType.values() ) );
-//		selectHourType.getItems().remove( WorkedHourType.ANY );
-//		selectHourType.getItems().add( "" );
+		//		selectHourType.getItems().remove( WorkedHourType.ANY );
+		//		selectHourType.getItems().add( "" );
 		duration = new Label( "Please select the duration of the worked hours:" );
 		inputDuration = new TextField();
 		submitButton = new Button( "Submit" );
@@ -52,12 +55,12 @@ public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane
 		this.getChildren().add( scrollPane );
 		scrollPane.setVbarPolicy( ScrollPane.ScrollBarPolicy.ALWAYS );
 		scrollPane.setHbarPolicy( ScrollPane.ScrollBarPolicy.NEVER );
+		scrollPane.layoutXProperty().setValue( 2 );
+		scrollPane.layoutYProperty().setValue( 2 );
 		scrollPane.prefWidthProperty().bind( this.widthProperty().subtract( 4 ) );
 		scrollPane.prefHeightProperty()
 				.bind( this.heightProperty().subtract( config.buffer * 2 ).subtract( submitButton.heightProperty() )
 						.subtract( 4 ) );
-		scrollPane.layoutXProperty().setValue( 2 );
-		scrollPane.layoutYProperty().setValue( 2 );
 		scrollPane.setFitToWidth( true );
 
 		// Content pane
@@ -117,7 +120,7 @@ public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane
 				.bind( scrollPane.layoutYProperty().add( scrollPane.heightProperty() ).add( config.buffer ) );
 		submitButton.prefWidthProperty().bind( this.widthProperty().subtract( config.buffer * 2 ) );
 		submitButton.setOnAction( e -> {
-			// TODO Submit worked hours
+			registerHours();
 		} );
 		this.getChildren().add( submitButton );
 
@@ -143,6 +146,32 @@ public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane
 				selectedPerson.getName() ) );
 		this.selectedPerson = person;
 		update();
+	}
+
+	protected void registerSubmitAction( Runnable runnable ) {
+		submitButton.setOnAction( e -> {
+			registerHours();
+			runnable.run();
+		} );
+	}
+
+	private void registerHours() {
+		try {
+			double hours = Double.parseDouble( inputDuration.getText() );
+			if (hours <= 0 ) {
+				ErrorPopupSystem.displayMessage( "Please submit a number of hours greater than 0." );
+			} else {
+				selectedPerson.reportHours( hours, selectHourType.getValue() );
+			}
+		} catch ( PersonNotOnTeamException e1 ) {
+			ErrorPopupSystem.displayMessage( "There was an issue submitting the hours." );
+		} catch ( InvalidWorkedHourTypeException e1 ) {
+			ErrorPopupSystem
+					.displayMessage( selectedPerson.getName() + " is unable to submit hours of that type." );
+		} catch ( NumberFormatException e2 ) {
+			ErrorPopupSystem
+					.displayMessage( inputDuration.getText() + " is not a number. Please input a valid number." );
+		}
 	}
 
 	private void reset() {

@@ -5,13 +5,12 @@ import javafx.scene.layout.Pane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Config;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.Project;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 
 public class HoursPane extends Pane implements ProjectPane {
 
-	private Config config;
-	SelectPersonPane selectPersonPane;
-	WorkedHoursSubmissionPane detailsPane;
+	private SelectPersonPane selectPersonPane;
+	private WorkedHoursSubmissionPane detailsPane;
+	private HourLogDisplayPane hourLogDisplayPane;
 
 	public HoursPane( Project project, Config config ) {
 		LoggingTool.print( "Constructing new HoursPane." );
@@ -36,16 +35,31 @@ public class HoursPane extends Pane implements ProjectPane {
 		this.getChildren().add( detailsPane );
 
 		// Display Hour Log Pane
+		LoggingTool.print( "HoursPane: Creating new HourLogDisplayPane." );
+		hourLogDisplayPane = new HourLogDisplayPane( project, config );
+		hourLogDisplayPane.layoutXProperty().bind( detailsPane.layoutXProperty() );
+		hourLogDisplayPane.layoutYProperty().bind( detailsPane.layoutYProperty().add( detailsPane.heightProperty() ) );
+		hourLogDisplayPane.prefWidthProperty().bind( detailsPane.widthProperty() );
+		hourLogDisplayPane.prefHeightProperty().bind( this.heightProperty().subtract( detailsPane.heightProperty() ) );
+		this.getChildren().add( hourLogDisplayPane );
 
 		selectPersonPane.setSelectResponse( () -> {
 			LoggingTool
 					.print( "HoursPane: Relaying newly-selected person from SelectPersonPane to WorkedHoursSubmissionPane." );
 			detailsPane.registerNewSelectedPerson( selectPersonPane.getSelectedPerson() );
 		} );
+
+		detailsPane.registerSubmitAction( () -> {
+			LoggingTool
+					.print( "HoursPane: Relaying submitted hours from WorkedHoursSubmissionPane to HourLogDisplayPane." );
+			hourLogDisplayPane.update();
+		} );
 	}
 
 	public void loadNewProject( Project project ) {
 		selectPersonPane.loadNewProject( project );
+		detailsPane.loadNewProject( project );
+		hourLogDisplayPane.loadNewProject( project );
 	}
 
 }
