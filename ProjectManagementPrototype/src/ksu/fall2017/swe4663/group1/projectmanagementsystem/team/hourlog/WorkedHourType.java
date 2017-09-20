@@ -6,9 +6,27 @@ public enum WorkedHourType {
 			"Testing" ), PROJECT_MANAGEMENT( "Project Management" );
 
 	String text;
+	double typeHourTotal;
+	boolean hoursHaveChanged;
 
 	WorkedHourType( String text ) {
 		this.text = text;
+	}
+
+	protected double getTypeHourTotal() {
+		return this.typeHourTotal;
+	}
+
+	protected boolean hasChanged() {
+		return hoursHaveChanged;
+	}
+
+	protected void setTypeHourTotal( double value ) {
+		this.typeHourTotal = value;
+	}
+
+	protected void setHasChanged( boolean value ) {
+		this.hoursHaveChanged = value;
 	}
 
 	@Override public String toString() {

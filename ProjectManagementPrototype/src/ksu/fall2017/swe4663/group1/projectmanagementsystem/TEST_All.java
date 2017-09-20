@@ -12,5 +12,5 @@ import org.junit.runners.Suite;
 
 @RunWith( Suite.class ) @Suite.SuiteClasses( { TEST_FunctionalRequirement.class, TEST_NonFunctionalRequirement.class,
 		TEST_WorkedHours.class, TEST_ProjectHourLog.class, TEST_Person.class, TEST_Team.class,
-		TEST_Risk.class, TEST_Project.class, TEST_ReadConfig.class } ) public class TEST_All {
+		TEST_Risk.class, TEST_Project.class } ) public class TEST_All {
 }

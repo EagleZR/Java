@@ -11,23 +11,29 @@ public class ProjectHourLog implements Serializable {
 
 	private static final long serialVersionUID = -7863698898951761080L;
 	private LinkedList<WorkedHours> workedHours;
+	private LinkedList<Person> contributors;
 
 	public ProjectHourLog( WorkedHours... workedHours ) {
 		LoggingTool.print( "Constructing new ProjectHourLog." );
 		this.workedHours = new LinkedList<>( Arrays.asList( workedHours ) );
+		this.contributors = new LinkedList<>();
 	}
 
-	public int getHours( WorkedHourType workedHourType ) {
-		int count = 0;
-		for ( WorkedHours workedHours : this.workedHours ) {
-			if ( workedHours.getType() == workedHourType || workedHourType == WorkedHourType.ANY ) {
-				count += workedHours.getDuration();
+	public double getHours( WorkedHourType workedHourType ) {
+		if ( workedHourType.hasChanged() ) {
+			int count = 0;
+			for ( WorkedHours workedHours : this.workedHours ) {
+				if ( workedHours.getType() == workedHourType || workedHourType == WorkedHourType.ANY ) {
+					count += workedHours.getDuration();
+				}
 			}
+			workedHourType.setTypeHourTotal( count );
+			workedHourType.setHasChanged( false );
 		}
-		return count;
+		return workedHourType.getTypeHourTotal();
 	}
 
-	public int getHours( Person person ) {
+	public double getHours( Person person ) {
 		int count = 0;
 		for ( WorkedHours workedHours : this.workedHours ) {
 			if ( workedHours.getPerson().equals( person ) ) {
@@ -40,6 +46,12 @@ public class ProjectHourLog implements Serializable {
 	public void registerHours( WorkedHours newWorkedHours ) {
 		LoggingTool.print( "ProjectHourLog: Registering new Hours: " + newWorkedHours.toString() + "." );
 		this.workedHours.add( newWorkedHours );
+		Person contributor = newWorkedHours.getPerson();
+		if ( !contributors.contains( contributor ) ) {
+			contributors.add( contributor );
+		}
+		WorkedHourType.ANY.setHasChanged( true );
+		newWorkedHours.getType().setHasChanged( true );
 	}
 
 	@Override public boolean equals( Object other ) {

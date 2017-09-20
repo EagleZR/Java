@@ -20,24 +20,24 @@ public class TEST_Person {
 	@Test public void reportEffort() throws Exception {
 		Person programmer = new Person( "Bob" );
 		Team team = new Team( programmer );
-		programmer.reportHours( 5, WorkedHourType.CODING );
+		programmer.reportHours( 5.0, WorkedHourType.CODING );
 
-		assertEquals( 5, team.getProjectHourLog().getHours( programmer ) );
+		assertEquals( 5.0, team.getProjectHourLog().getHours( programmer ), .001 );
 
 		programmer.reportHours( 8, WorkedHourType.DESIGNING );
 
-		assertEquals( 5, team.getProjectHourLog().getHours( WorkedHourType.CODING ) );
-		assertEquals( 8, team.getProjectHourLog().getHours( WorkedHourType.DESIGNING ) );
-		assertEquals( 13, team.getProjectHourLog().getHours( programmer ) );
+		assertEquals( 5.0, team.getProjectHourLog().getHours( WorkedHourType.CODING ), .001 );
+		assertEquals( 8.0, team.getProjectHourLog().getHours( WorkedHourType.DESIGNING ), .001 );
+		assertEquals( 13.0, team.getProjectHourLog().getHours( programmer ), .001 );
 
 		Person programmer1 = new Person( "Dexter" );
 		team.addToTeam( programmer1 );
 		programmer1.reportHours( 2, WorkedHourType.CODING );
 
-		assertEquals( 7, team.getProjectHourLog().getHours( WorkedHourType.CODING ) );
-		assertEquals( 8, team.getProjectHourLog().getHours( WorkedHourType.DESIGNING ) );
-		assertEquals( 13, team.getProjectHourLog().getHours( programmer ) );
-		assertEquals( 2, team.getProjectHourLog().getHours( programmer1 ) );
+		assertEquals( 7.0, team.getProjectHourLog().getHours( WorkedHourType.CODING ), .001 );
+		assertEquals( 8.0, team.getProjectHourLog().getHours( WorkedHourType.DESIGNING ), .001 );
+		assertEquals( 13.0, team.getProjectHourLog().getHours( programmer ), .001 );
+		assertEquals( 2.0, team.getProjectHourLog().getHours( programmer1 ), .001 );
 	}
 
 	@Test public void equals() throws Exception {

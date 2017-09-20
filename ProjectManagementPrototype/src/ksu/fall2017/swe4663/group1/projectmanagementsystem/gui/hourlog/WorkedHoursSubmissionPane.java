@@ -156,21 +156,25 @@ public class WorkedHoursSubmissionPane extends FramedPane implements ProjectPane
 	}
 
 	private void registerHours() {
-		try {
-			double hours = Double.parseDouble( inputDuration.getText() );
-			if (hours <= 0 ) {
-				ErrorPopupSystem.displayMessage( "Please submit a number of hours greater than 0." );
-			} else {
-				selectedPerson.reportHours( hours, selectHourType.getValue() );
+		if ( selectedPerson == null ) {
+			ErrorPopupSystem.displayMessage( "Please select a person." );
+		} else {
+			try {
+				double hours = Double.parseDouble( inputDuration.getText() );
+				if ( hours <= 0 ) {
+					ErrorPopupSystem.displayMessage( "Please submit a number of hours greater than 0." );
+				} else {
+					selectedPerson.reportHours( hours, selectHourType.getValue() );
+				}
+			} catch ( PersonNotOnTeamException e1 ) {
+				ErrorPopupSystem.displayMessage( "There was an issue submitting the hours." );
+			} catch ( InvalidWorkedHourTypeException e1 ) {
+				ErrorPopupSystem
+						.displayMessage( selectedPerson.getName() + " is unable to submit hours of that type." );
+			} catch ( NumberFormatException e2 ) {
+				ErrorPopupSystem
+						.displayMessage( inputDuration.getText() + " is not a number. Please input a valid number." );
 			}
-		} catch ( PersonNotOnTeamException e1 ) {
-			ErrorPopupSystem.displayMessage( "There was an issue submitting the hours." );
-		} catch ( InvalidWorkedHourTypeException e1 ) {
-			ErrorPopupSystem
-					.displayMessage( selectedPerson.getName() + " is unable to submit hours of that type." );
-		} catch ( NumberFormatException e2 ) {
-			ErrorPopupSystem
-					.displayMessage( inputDuration.getText() + " is not a number. Please input a valid number." );
 		}
 	}
 

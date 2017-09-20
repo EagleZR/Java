@@ -4,7 +4,7 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.*;
 import static junit.framework.TestCase.assertNotSame;
 
 public class TEST_ProjectHourLog {
@@ -60,22 +60,22 @@ public class TEST_ProjectHourLog {
 	}
 
 	@Test public void TEST_getEffortOfType() {
-		assertEquals( 119, projectHourLog.getHours( WorkedHourType.ANY ) );
-		assertEquals( 16, projectHourLog.getHours( WorkedHourType.REQUIREMENTS_ANALYSIS ) );
-		assertEquals( 33, projectHourLog.getHours( WorkedHourType.DESIGNING ) );
-		assertEquals( 51, projectHourLog.getHours( WorkedHourType.CODING ) );
-		assertEquals( 11, projectHourLog.getHours( WorkedHourType.TESTING ) );
-		assertEquals( 8, projectHourLog.getHours( WorkedHourType.PROJECT_MANAGEMENT ) );
+		assertEquals( 119.0, projectHourLog.getHours( WorkedHourType.ANY ), .001 );
+		assertEquals( 16.0, projectHourLog.getHours( WorkedHourType.REQUIREMENTS_ANALYSIS ), .001 );
+		assertEquals( 33.0, projectHourLog.getHours( WorkedHourType.DESIGNING ), .001 );
+		assertEquals( 51.0, projectHourLog.getHours( WorkedHourType.CODING ), .001 );
+		assertEquals( 11.0, projectHourLog.getHours( WorkedHourType.TESTING ), .001 );
+		assertEquals( 8.0, projectHourLog.getHours( WorkedHourType.PROJECT_MANAGEMENT ), .001 );
 	}
 
 	@Test public void TEST_getEffortOfPerson() {
-		assertEquals( 9, projectHourLog.getHours( p1 ) );
-		assertEquals( 23, projectHourLog.getHours( p2 ) );
-		assertEquals( 14, projectHourLog.getHours( p3 ) );
-		assertEquals( 17, projectHourLog.getHours( p4 ) );
-		assertEquals( 21, projectHourLog.getHours( p5 ) );
-		assertEquals( 17, projectHourLog.getHours( p6 ) );
-		assertEquals( 18, projectHourLog.getHours( p7 ) );
+		assertEquals( 9.0, projectHourLog.getHours( p1 ), .001 );
+		assertEquals( 23.0, projectHourLog.getHours( p2 ), .001 );
+		assertEquals( 14.0, projectHourLog.getHours( p3 ), .001 );
+		assertEquals( 17.0, projectHourLog.getHours( p4 ), .001 );
+		assertEquals( 21.0, projectHourLog.getHours( p5 ), .001 );
+		assertEquals( 17.0, projectHourLog.getHours( p6 ), .001 );
+		assertEquals( 18.0, projectHourLog.getHours( p7 ), .001 );
 	}
 
 	@Test public void TEST_equals() {
