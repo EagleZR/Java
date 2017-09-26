@@ -13,7 +13,7 @@ import ksu.fall2017.swe4663.group1.projectmanagementsystem.ProjectPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.FramedPane;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButton;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.PersonButtonScrollPane;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.TeamPresenter;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.TeamPresenter;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.Person;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.PersonNotOnTeamException;
 

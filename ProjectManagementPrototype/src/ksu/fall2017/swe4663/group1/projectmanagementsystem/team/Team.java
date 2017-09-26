@@ -1,7 +1,7 @@
 package ksu.fall2017.swe4663.group1.projectmanagementsystem.team;
 
 import eaglezr.support.logs.LoggingTool;
-import ksu.fall2017.swe4663.group1.projectmanagementsystem.gui.TeamPresenter;
+import ksu.fall2017.swe4663.group1.projectmanagementsystem.TeamPresenter;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.ProjectHourLog;
 import ksu.fall2017.swe4663.group1.projectmanagementsystem.team.hourlog.WorkedHours;
 

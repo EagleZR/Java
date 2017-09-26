@@ -30,7 +30,7 @@ public class Project implements Serializable {
 	}
 
 	public static void save( Project project, File saveFile ) throws IOException {
-		LoggingTool.print( "Project: Saving project as: " +  saveFile.getAbsolutePath() + "." );
+		LoggingTool.print( "Project: Saving project as: " + saveFile.getAbsolutePath() + "." );
 		if ( !saveFile.exists() ) {
 			saveFile.createNewFile();
 		}
@@ -44,7 +44,7 @@ public class Project implements Serializable {
 	}
 
 	public static Project load( File loadFile ) throws IOException, ClassNotFoundException {
-		LoggingTool.print( "Project: Loading project from: " +  loadFile.getAbsolutePath() + "." );
+		LoggingTool.print( "Project: Loading project from: " + loadFile.getAbsolutePath() + "." );
 		if ( !loadFile.exists() ) {
 			LoggingTool.print( "Project: File does not exist." );
 			throw new FileNotFoundException( "The File, " + loadFile.getName() + " could not be located." );
@@ -53,7 +53,7 @@ public class Project implements Serializable {
 		return (Project) in.readObject();
 	}
 
-	public void setTeam(Team team) {
+	public void setTeam( Team team ) {
 		LoggingTool.print( "Project: New team has been set." );
 		this.team = team;
 	}
