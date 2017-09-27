@@ -1,7 +1,0 @@
-Mon Aug 28 17:55:18 EDT 2017: A new directory was created at C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2
-Mon Aug 28 17:55:18 EDT 2017: The file Problem 1pt2 Report.docx was copied from C:\Users\Mark\Dropbox\CS3304\HW1 pt 2\Project_1pt2 to C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2\Project_1pt2
-Mon Aug 28 17:55:18 EDT 2017: The file main.cpp was copied from C:\Users\Mark\Dropbox\CS3304\HW1 pt 2\Project_1pt2\Project_1_6 to C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2\Project_1pt2\Project_1_6
-Mon Aug 28 17:55:18 EDT 2017: The file main.cpp was copied from C:\Users\Mark\Dropbox\CS3304\HW1 pt 2\Project_1pt2\Project_1_7 to C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2\Project_1pt2\Project_1_7
-Mon Aug 28 17:55:18 EDT 2017: The file main.cpp was copied from C:\Users\Mark\Dropbox\CS3304\HW1 pt 2\Project_1pt2\Project_1_8 to C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2\Project_1pt2\Project_1_8
-Mon Aug 28 17:55:18 EDT 2017: The file main.cpp was copied from C:\Users\Mark\Dropbox\CS3304\HW1 pt 2\Project_1pt2\Project_1_9 to C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2\Project_1pt2\Project_1_9
-Mon Aug 28 17:55:19 EDT 2017: The files were extracted to C:\Users\Mark\Dropbox\CS3304\Zeagler_HW1 pt 2
