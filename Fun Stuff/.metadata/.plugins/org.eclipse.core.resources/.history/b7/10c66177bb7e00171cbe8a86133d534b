@@ -1,0 +1,32 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import eaglezr.rip_shredder.RIP;
+import eaglezr.rip_shredder.RIP_Shredder;
+
+public class testMain {
+
+	public static void main(String[] args) {
+		try {
+			ServerSocket server = new ServerSocket(11896);
+			Socket connection = server.accept();
+
+			DataInputStream in = new DataInputStream(connection.getInputStream());
+			DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+
+			out.writeUTF("State purpose.");
+
+			while (true) {
+				System.out.println(in.read());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}

@@ -1,0 +1,4 @@
+INDEX VERSION 1.130+C:\Users\Mark\Documents\GitHub\Java\Fun Stuff\.metadata\.plugins\org.eclipse.jdt.core
+2333997408.index
+2524906749.index
+1775439870.index

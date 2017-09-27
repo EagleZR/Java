@@ -1,3 +1,0 @@
-Reading from website: CountGettysburgAddress.java
-Creating directories: Directory.java
-Working with the Calendar: PrintCalendar.java
