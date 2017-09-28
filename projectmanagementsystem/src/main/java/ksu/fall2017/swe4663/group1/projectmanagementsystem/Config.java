@@ -8,6 +8,9 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Class meant save, load, and represent the configuration specifics for the {@link ksu.fall2017.swe4663.group1.projectmanagementsystem}.
+ */
 public class Config implements Closeable {
 
 	private static File configFile = new File( "data/config.ini" );
